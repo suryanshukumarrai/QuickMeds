@@ -51,7 +51,16 @@ public class CartService {
     }
 
     private CartDtos.CartResponse toResponse(Cart cart) {
-        var items = cart.getItems().stream().map(item -> CartDtos.CartItemResponse.builder().id(item.getId()).medicineId(item.getMedicine().getId()).medicineName(item.getMedicine().getName()).price(item.getMedicine().getPrice()).quantity(item.getQuantity()).lineTotal(item.getMedicine().getPrice().multiply(BigDecimal.valueOf(item.getQuantity()))).build()).toList();
+        var items = cart.getItems().stream().map(item -> CartDtos.CartItemResponse.builder()
+            .id(item.getId())
+            .medicineId(item.getMedicine().getId())
+            .medicineName(item.getMedicine().getName())
+            .categoryId(item.getMedicine().getCategory().getId())
+            .categoryName(item.getMedicine().getCategory().getName())
+            .price(item.getMedicine().getPrice())
+            .quantity(item.getQuantity())
+            .lineTotal(item.getMedicine().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+            .build()).toList();
         BigDecimal total = items.stream().map(CartDtos.CartItemResponse::getLineTotal).reduce(BigDecimal.ZERO, BigDecimal::add);
         return CartDtos.CartResponse.builder().id(cart.getId()).items(items).total(total).build();
     }
