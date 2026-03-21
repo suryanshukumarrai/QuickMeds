@@ -2,10 +2,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../api/client';
 import { useAuth } from '../contexts/AuthContext';
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import api from '../api/client';
-import { useAuth } from '../contexts/AuthContext';
 import { emitCartUpdated } from '../utils/cartEvents';
 import { formatInr, getMedicineImage } from '../utils/medicineUi';
 
