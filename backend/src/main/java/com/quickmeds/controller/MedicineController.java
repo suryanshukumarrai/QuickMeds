@@ -4,6 +4,7 @@ import com.quickmeds.dto.MedicineDtos;
 import com.quickmeds.repository.CategoryRepository;
 import com.quickmeds.service.MedicineService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,7 @@ public class MedicineController {
 
     @GetMapping("/api/medicines")
     public ResponseEntity<List<MedicineDtos.MedicineResponse>> medicines(@RequestParam(required = false) String search, @RequestParam(required = false) Long categoryId) {
-        return ResponseEntity.ok(medicineService.findAll(search, categoryId));
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(medicineService.findAll(search, categoryId));
     }
 
     @GetMapping("/api/medicines/{id}")

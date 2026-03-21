@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../api/client';
+import { formatInr } from '../utils/medicineUi';
 
 function CartPage() {
   const [cart, setCart] = useState(null);
@@ -56,7 +57,7 @@ function CartPage() {
             <div key={item.id} className="bg-white rounded-xl border border-slate-200 p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
               <div>
                 <p className="font-semibold">{item.medicineName}</p>
-                <p className="text-sm text-slate-500">${item.price} x {item.quantity}</p>
+                <p className="text-sm text-slate-500">{formatInr(item.price)} x {item.quantity}</p>
               </div>
               <div className="flex items-center gap-2">
                 <input
@@ -70,7 +71,7 @@ function CartPage() {
               </div>
             </div>
           ))}
-          <p className="text-xl font-bold">Total: ${cart.total}</p>
+          <p className="text-xl font-bold">Total: {formatInr(cart.total)}</p>
 
           <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-3">
             <h2 className="text-lg font-bold">Prescription Upload</h2>
