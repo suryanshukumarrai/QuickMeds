@@ -60,9 +60,22 @@ public class OrderService {
         return orderRepository.findByUserOrderByCreatedAtDesc(user).stream().map(this::toResponse).toList();
     }
 
+    public List<OrderDtos.OrderResponse> findAll() {
+        return orderRepository.findAllByOrderByCreatedAtDesc().stream().map(this::toResponse).toList();
+    }
+
+    public OrderDtos.OrderResponse updateStatus(Long id, OrderStatus status) {
+        Order order = orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        order.setStatus(status);
+        return toResponse(orderRepository.save(order));
+    }
+
     private OrderDtos.OrderResponse toResponse(Order o) {
         return OrderDtos.OrderResponse.builder()
                 .id(o.getId())
+                .userId(o.getUser().getId())
+                .userEmail(o.getUser().getEmail())
+                .userFullName(o.getUser().getFullName())
                 .totalAmount(o.getTotalAmount())
                 .status(o.getStatus())
                 .prescriptionId(o.getPrescription() != null ? o.getPrescription().getId() : null)

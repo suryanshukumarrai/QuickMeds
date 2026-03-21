@@ -26,9 +26,7 @@ function AdminOrdersList() {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      // Note: This endpoint returns only current user's orders
-      // For admin, we'd need an admin endpoint to fetch all orders
-      const res = await api.get('/orders');
+      const res = await api.get('/admin/orders');
       setOrders(res.data || []);
       setFilteredOrders(res.data || []);
     } catch (err) {
@@ -61,12 +59,12 @@ function AdminOrdersList() {
 
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
-      // This is a placeholder - you'll need to create this endpoint in the backend
-      console.log('Updating order', orderId, 'to status', newStatus);
-      // await api.put(`/admin/orders/${orderId}`, { status: newStatus });
-      alert('Status update endpoint needs to be created in backend');
+      const { data } = await api.put(`/admin/orders/${orderId}/status`, { status: newStatus });
+      setOrders((prev) => prev.map((order) => (order.id === orderId ? data : order)));
+      setSelectedOrder((prev) => (prev && prev.id === orderId ? data : prev));
     } catch (err) {
       console.error('Error updating order:', err);
+      setError('Failed to update order status');
     }
   };
 
@@ -120,6 +118,7 @@ function AdminOrdersList() {
                 <thead className="border-b border-slate-200 bg-slate-50">
                   <tr>
                     <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">Order ID</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">Customer</th>
                     <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">Total Amount</th>
                     <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">Status</th>
                     <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">Date</th>
@@ -131,6 +130,10 @@ function AdminOrdersList() {
                   {filteredOrders.map((order) => (
                     <tr key={order.id} className="border-b border-slate-200 hover:bg-slate-50">
                       <td className="px-4 py-3 text-slate-900 font-medium">#{order.id}</td>
+                      <td className="px-4 py-3 text-slate-600">
+                        {order.userFullName || 'Unknown'}
+                        <div className="text-xs text-slate-500">{order.userEmail || 'N/A'}</div>
+                      </td>
                       <td className="px-4 py-3 text-slate-900 font-semibold">
                         ${order.totalAmount.toFixed(2)}
                       </td>
@@ -177,6 +180,12 @@ function AdminOrdersList() {
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
+                  <p className="text-sm text-slate-600">Customer</p>
+                  <p className="text-slate-900 font-semibold">
+                    {selectedOrder.userFullName || 'Unknown'} ({selectedOrder.userEmail || 'N/A'})
+                  </p>
+                </div>
+                <div>
                   <p className="text-sm text-slate-600">Total Amount</p>
                   <p className="text-xl font-bold text-slate-900">
                     ${selectedOrder.totalAmount.toFixed(2)}
@@ -221,6 +230,20 @@ function AdminOrdersList() {
                   </div>
                 </div>
               )}
+
+              <div>
+                <h3 className="font-semibold text-slate-900 mb-2">Update Status</h3>
+                <select
+                  value={selectedOrder.status}
+                  onChange={(e) => updateOrderStatus(selectedOrder.id, e.target.value)}
+                  className="px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="PLACED">Placed</option>
+                  <option value="PROCESSING">Processing</option>
+                  <option value="DELIVERED">Delivered</option>
+                  <option value="CANCELLED">Cancelled</option>
+                </select>
+              </div>
             </div>
 
             <div className="p-6 border-t border-slate-200 flex justify-end">

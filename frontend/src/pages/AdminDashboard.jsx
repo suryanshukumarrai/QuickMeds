@@ -18,26 +18,26 @@ function AdminDashboard() {
     const fetchStats = async () => {
       try {
         setLoading(true);
-        
-        // Fetch orders
-        const ordersRes = await api.get('/orders');
+
+        const ordersRes = await api.get('/admin/orders');
         const orders = ordersRes.data || [];
         const totalRevenue = orders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
 
-        // Fetch medicines for low stock
         const medicinesRes = await api.get('/medicines?search=');
         const medicines = medicinesRes.data || [];
         const lowStock = medicines.filter(m => m.stock < 10).length;
 
-        // Fetch prescriptions
-        const prescriptionsRes = await api.get('/prescriptions');
+        const prescriptionsRes = await api.get('/admin/prescriptions');
         const prescriptions = prescriptionsRes.data || [];
         const pendingPrescriptions = prescriptions.filter(p => !p.validated).length;
+
+        const usersRes = await api.get('/admin/users');
+        const users = usersRes.data || [];
 
         setStats({
           totalOrders: orders.length,
           totalRevenue: totalRevenue,
-          totalUsers: 0, // Would need admin endpoint for this
+          totalUsers: users.length,
           pendingPrescriptions: pendingPrescriptions,
           lowStockMedicines: lowStock,
         });

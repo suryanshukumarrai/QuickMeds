@@ -6,8 +6,7 @@ import {
   FileText, 
   Users, 
   Tags,
-  BarChart3,
-  ChevronDown
+  BarChart3
 } from 'lucide-react';
 
 function AdminSidebar() {

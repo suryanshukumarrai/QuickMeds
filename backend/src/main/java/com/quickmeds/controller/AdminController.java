@@ -1,15 +1,21 @@
 package com.quickmeds.controller;
 
+import com.quickmeds.dto.AdminDtos;
 import com.quickmeds.dto.MedicineDtos;
+import com.quickmeds.dto.OrderDtos;
 import com.quickmeds.dto.PrescriptionDtos;
+import com.quickmeds.service.CategoryService;
 import com.quickmeds.service.MedicineService;
+import com.quickmeds.service.OrderService;
 import com.quickmeds.service.PrescriptionService;
+import com.quickmeds.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -19,6 +25,9 @@ import java.util.Map;
 public class AdminController {
     private final MedicineService medicineService;
     private final PrescriptionService prescriptionService;
+    private final OrderService orderService;
+    private final UserService userService;
+    private final CategoryService categoryService;
 
     @PostMapping("/medicines")
     public ResponseEntity<MedicineDtos.MedicineResponse> create(@Valid @RequestBody MedicineDtos.MedicineRequest request) {
@@ -39,5 +48,46 @@ public class AdminController {
     @PutMapping("/prescriptions/{id}/validate")
     public ResponseEntity<PrescriptionDtos.PrescriptionResponse> validate(@PathVariable Long id, @Valid @RequestBody PrescriptionDtos.ValidatePrescriptionRequest request) {
         return ResponseEntity.ok(prescriptionService.validate(id, request.getValidated()));
+    }
+
+    @GetMapping("/orders")
+    public ResponseEntity<List<OrderDtos.OrderResponse>> orders() {
+        return ResponseEntity.ok(orderService.findAll());
+    }
+
+    @PutMapping("/orders/{id}/status")
+    public ResponseEntity<OrderDtos.OrderResponse> updateOrderStatus(@PathVariable Long id, @Valid @RequestBody OrderDtos.UpdateOrderStatusRequest request) {
+        return ResponseEntity.ok(orderService.updateStatus(id, request.getStatus()));
+    }
+
+    @GetMapping("/prescriptions")
+    public ResponseEntity<List<PrescriptionDtos.PrescriptionResponse>> prescriptions() {
+        return ResponseEntity.ok(prescriptionService.findAll());
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<AdminDtos.UserSummaryResponse>> users() {
+        return ResponseEntity.ok(userService.findAllSummaries());
+    }
+
+    @GetMapping("/categories")
+    public ResponseEntity<List<AdminDtos.CategoryResponse>> categories() {
+        return ResponseEntity.ok(categoryService.findAll());
+    }
+
+    @PostMapping("/categories")
+    public ResponseEntity<AdminDtos.CategoryResponse> createCategory(@Valid @RequestBody AdminDtos.CategoryRequest request) {
+        return ResponseEntity.ok(categoryService.create(request));
+    }
+
+    @PutMapping("/categories/{id}")
+    public ResponseEntity<AdminDtos.CategoryResponse> updateCategory(@PathVariable Long id, @Valid @RequestBody AdminDtos.CategoryRequest request) {
+        return ResponseEntity.ok(categoryService.update(id, request));
+    }
+
+    @DeleteMapping("/categories/{id}")
+    public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
+        categoryService.delete(id);
+        return ResponseEntity.ok(Map.of("message", "Category deleted"));
     }
 }

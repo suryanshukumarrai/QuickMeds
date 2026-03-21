@@ -14,6 +14,9 @@ import AdminMedicinesList from './pages/AdminMedicinesList';
 import AdminMedicineForm from './pages/AdminMedicineForm';
 import AdminOrdersList from './pages/AdminOrdersList';
 import AdminPrescriptionsList from './pages/AdminPrescriptionsList';
+import AdminUsersList from './pages/AdminUsersList';
+import AdminCategoriesPage from './pages/AdminCategoriesPage';
+import AdminReportsPage from './pages/AdminReportsPage';
 
 function App() {
   return (
@@ -33,6 +36,9 @@ function App() {
         <Route path="/admin/medicines/:id/edit" element={<ProtectedAdminRoute><AdminMedicineForm /></ProtectedAdminRoute>} />
         <Route path="/admin/orders" element={<ProtectedAdminRoute><AdminOrdersList /></ProtectedAdminRoute>} />
         <Route path="/admin/prescriptions" element={<ProtectedAdminRoute><AdminPrescriptionsList /></ProtectedAdminRoute>} />
+        <Route path="/admin/users" element={<ProtectedAdminRoute><AdminUsersList /></ProtectedAdminRoute>} />
+        <Route path="/admin/categories" element={<ProtectedAdminRoute><AdminCategoriesPage /></ProtectedAdminRoute>} />
+        <Route path="/admin/reports" element={<ProtectedAdminRoute><AdminReportsPage /></ProtectedAdminRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>

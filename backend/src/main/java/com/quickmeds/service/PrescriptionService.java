@@ -49,6 +49,10 @@ public class PrescriptionService {
         return prescriptionRepository.findByUserOrderByUploadedAtDesc(user).stream().map(this::toResponse).toList();
     }
 
+    public List<PrescriptionDtos.PrescriptionResponse> findAll() {
+        return prescriptionRepository.findAllByOrderByUploadedAtDesc().stream().map(this::toResponse).toList();
+    }
+
     public PrescriptionDtos.PrescriptionResponse validate(Long id, Boolean validated) {
         Prescription p = prescriptionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Prescription not found"));
         p.setValidated(validated);
@@ -56,6 +60,14 @@ public class PrescriptionService {
     }
 
     private PrescriptionDtos.PrescriptionResponse toResponse(Prescription p) {
-        return PrescriptionDtos.PrescriptionResponse.builder().id(p.getId()).fileName(p.getFileName()).validated(p.getValidated()).uploadedAt(p.getUploadedAt()).build();
+        return PrescriptionDtos.PrescriptionResponse.builder()
+                .id(p.getId())
+                .userId(p.getUser().getId())
+                .userEmail(p.getUser().getEmail())
+                .userFullName(p.getUser().getFullName())
+                .fileName(p.getFileName())
+                .validated(p.getValidated())
+                .uploadedAt(p.getUploadedAt())
+                .build();
     }
 }

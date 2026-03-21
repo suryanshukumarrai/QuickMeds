@@ -19,8 +19,7 @@ function AdminPrescriptionsList() {
   const fetchPrescriptions = async () => {
     try {
       setLoading(true);
-      // This fetches current user's prescriptions - need admin endpoint for all
-      const res = await api.get('/prescriptions');
+      const res = await api.get('/admin/prescriptions');
       setPrescriptions(res.data || []);
       filterPrescriptions(res.data || [], 'PENDING');
     } catch (err) {
@@ -133,6 +132,9 @@ function AdminPrescriptionsList() {
                         )}
                       </div>
                       <p className="text-sm text-slate-600">
+                        User: {prescription.userFullName || 'Unknown'} ({prescription.userEmail || 'N/A'})
+                      </p>
+                      <p className="text-sm text-slate-600">
                         File: {prescription.fileName || 'N/A'}
                       </p>
                       <p className="text-sm text-slate-600">
@@ -169,6 +171,13 @@ function AdminPrescriptionsList() {
             </div>
 
             <div className="p-6 space-y-4">
+              <div>
+                <p className="text-sm text-slate-600 mb-2">User</p>
+                <p className="text-slate-900 font-semibold">
+                  {selectedPrescription.userFullName || 'Unknown'} ({selectedPrescription.userEmail || 'N/A'})
+                </p>
+              </div>
+
               <div>
                 <p className="text-sm text-slate-600 mb-2">File Name</p>
                 <p className="text-slate-900 font-semibold">
