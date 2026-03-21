@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../api/client';
 import MedicineCard from '../components/MedicineCard';
 import { useAuth } from '../contexts/AuthContext';
+import { emitCartUpdated } from '../utils/cartEvents';
 
 function ProductListingPage() {
   const [medicines, setMedicines] = useState([]);
@@ -20,6 +21,7 @@ function ProductListingPage() {
       next[item.medicineId] = { itemId: item.id, quantity: item.quantity };
     });
     setCartItemsByMedicine(next);
+    emitCartUpdated(cartData);
   };
 
   const loadCart = async () => {

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../api/client';
 import MedicineCard from '../components/MedicineCard';
 import { useAuth } from '../contexts/AuthContext';
+import { emitCartUpdated } from '../utils/cartEvents';
 
 function HomePage() {
   const [medicines, setMedicines] = useState([]);
@@ -17,6 +18,7 @@ function HomePage() {
       next[item.medicineId] = { itemId: item.id, quantity: item.quantity };
     });
     setCartItemsByMedicine(next);
+    emitCartUpdated(cartData);
   };
 
   const loadCart = async () => {
