@@ -39,6 +39,9 @@ public class Order {
     @Column(nullable = false)
     private OrderStatus status;
 
+    @Column(columnDefinition = "TEXT")
+    private String cancellationReason;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
 }

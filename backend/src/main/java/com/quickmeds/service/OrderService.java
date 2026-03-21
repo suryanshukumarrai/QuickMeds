@@ -33,11 +33,12 @@ public class OrderService {
 
         boolean requiresRx = cart.getItems().stream().anyMatch(i -> Boolean.TRUE.equals(i.getMedicine().getRequiresPrescription()));
         Prescription rx = null;
-        if (requiresRx) {
-            if (request.getPrescriptionId() == null) throw new BadRequestException("Prescription required");
+        if (request.getPrescriptionId() != null) {
             rx = prescriptionRepository.findById(request.getPrescriptionId()).orElseThrow(() -> new ResourceNotFoundException("Prescription not found"));
             if (!rx.getUser().getId().equals(user.getId())) throw new BadRequestException("Prescription does not belong to user");
-            if (!Boolean.TRUE.equals(rx.getValidated())) throw new BadRequestException("Prescription not validated yet");
+        }
+        if (requiresRx && rx == null) {
+            throw new BadRequestException("Prescription required for medicines in cart");
         }
 
         Order order = Order.builder().user(user).status(OrderStatus.PLACED).createdAt(LocalDateTime.now()).prescription(rx).items(new ArrayList<>()).build();
@@ -68,13 +69,34 @@ public class OrderService {
     public OrderDtos.OrderResponse updateStatus(Long id, OrderStatus status) {
         Order order = orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found"));
         order.setStatus(status);
+        if (status == OrderStatus.CANCELLED && order.getCancellationReason() == null) {
+            order.setCancellationReason("Cancelled by admin");
+        }
+        if (status != OrderStatus.CANCELLED) {
+            order.setCancellationReason(null);
+        }
         return toResponse(orderRepository.save(order));
+    }
+
+    public void cancelOrdersByRejectedPrescription(Long prescriptionId, String reason) {
+        List<Order> orders = orderRepository.findByPrescriptionIdAndStatusIn(
+                prescriptionId,
+                List.of(OrderStatus.PLACED, OrderStatus.PROCESSING)
+        );
+        if (orders.isEmpty()) {
+            return;
+        }
+        for (Order order : orders) {
+            order.setStatus(OrderStatus.CANCELLED);
+            order.setCancellationReason(reason);
+        }
+        orderRepository.saveAll(orders);
     }
 
     public byte[] exportOrdersCsv() {
         List<OrderDtos.OrderResponse> orders = findAll();
         StringBuilder sb = new StringBuilder();
-        sb.append("orderId,userId,userName,userEmail,totalAmount,status,createdAt,itemCount\n");
+        sb.append("orderId,userId,userName,userEmail,totalAmount,status,cancellationReason,createdAt,itemCount\n");
         for (OrderDtos.OrderResponse order : orders) {
             sb.append(order.getId()).append(',')
                     .append(order.getUserId() != null ? order.getUserId() : "")
@@ -83,6 +105,7 @@ public class OrderService {
                     .append(csvValue(order.getUserEmail())).append(',')
                     .append(order.getTotalAmount()).append(',')
                     .append(order.getStatus()).append(',')
+                .append(csvValue(order.getCancellationReason())).append(',')
                     .append(order.getCreatedAt()).append(',')
                     .append(order.getItems() != null ? order.getItems().size() : 0)
                     .append('\n');
@@ -106,6 +129,7 @@ public class OrderService {
                 .userFullName(o.getUser().getFullName())
                 .totalAmount(o.getTotalAmount())
                 .status(o.getStatus())
+                .cancellationReason(o.getCancellationReason())
                 .prescriptionId(o.getPrescription() != null ? o.getPrescription().getId() : null)
                 .createdAt(o.getCreatedAt())
                 .items(o.getItems().stream().map(i -> OrderDtos.OrderItemResponse.builder().medicineId(i.getMedicine().getId()).medicineName(i.getMedicine().getName()).quantity(i.getQuantity()).priceAtPurchase(i.getPriceAtPurchase()).build()).toList())

@@ -35,6 +35,7 @@ public class OrderDtos {
         private String userFullName;
         private BigDecimal totalAmount;
         private OrderStatus status;
+        private String cancellationReason;
         private Long prescriptionId;
         private LocalDateTime createdAt;
         private List<OrderItemResponse> items;

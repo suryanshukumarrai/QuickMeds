@@ -25,6 +25,7 @@ import java.util.UUID;
 public class PrescriptionService {
     private final PrescriptionRepository prescriptionRepository;
     private final UserRepository userRepository;
+    private final OrderService orderService;
 
     @Value("${app.upload-dir}")
     private String uploadDir;
@@ -56,7 +57,14 @@ public class PrescriptionService {
     public PrescriptionDtos.PrescriptionResponse validate(Long id, Boolean validated) {
         Prescription p = prescriptionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Prescription not found"));
         p.setValidated(validated);
-        return toResponse(prescriptionRepository.save(p));
+        Prescription saved = prescriptionRepository.save(p);
+        if (Boolean.FALSE.equals(validated)) {
+            orderService.cancelOrdersByRejectedPrescription(
+                    saved.getId(),
+                    "Cancelled due to prescription rejection by admin"
+            );
+        }
+        return toResponse(saved);
     }
 
     public Path getPrescriptionFilePath(Long id) {
