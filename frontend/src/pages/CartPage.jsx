@@ -99,7 +99,14 @@ function CartPage() {
               </div>
             </div>
           ))}
-          <p className="text-xl font-bold">Total: {formatInr(cart.total)}</p>
+<p className="text-xl font-bold">
+  Total: {formatInr(
+    cart.items.reduce(
+      (sum, item) => sum + Number(item.price) * Number(item.quantity),
+      0
+    )
+  )}
+</p>
 
           <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-3">
             <h2 className="text-lg font-bold">Prescription Upload</h2>
@@ -118,6 +125,7 @@ function CartPage() {
       )}
     </div>
   );
+
 }
 
 export default CartPage;
