@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,9 +61,49 @@ public class OrderService {
         return orderRepository.findByUserOrderByCreatedAtDesc(user).stream().map(this::toResponse).toList();
     }
 
+    public List<OrderDtos.OrderResponse> findAll() {
+        return orderRepository.findAllByOrderByCreatedAtDesc().stream().map(this::toResponse).toList();
+    }
+
+    public OrderDtos.OrderResponse updateStatus(Long id, OrderStatus status) {
+        Order order = orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        order.setStatus(status);
+        return toResponse(orderRepository.save(order));
+    }
+
+    public byte[] exportOrdersCsv() {
+        List<OrderDtos.OrderResponse> orders = findAll();
+        StringBuilder sb = new StringBuilder();
+        sb.append("orderId,userId,userName,userEmail,totalAmount,status,createdAt,itemCount\n");
+        for (OrderDtos.OrderResponse order : orders) {
+            sb.append(order.getId()).append(',')
+                    .append(order.getUserId() != null ? order.getUserId() : "")
+                    .append(',')
+                    .append(csvValue(order.getUserFullName())).append(',')
+                    .append(csvValue(order.getUserEmail())).append(',')
+                    .append(order.getTotalAmount()).append(',')
+                    .append(order.getStatus()).append(',')
+                    .append(order.getCreatedAt()).append(',')
+                    .append(order.getItems() != null ? order.getItems().size() : 0)
+                    .append('\n');
+        }
+        return sb.toString().getBytes(StandardCharsets.UTF_8);
+    }
+
+    private String csvValue(String value) {
+        if (value == null) {
+            return "";
+        }
+        String escaped = value.replace("\"", "\"\"");
+        return "\"" + escaped + "\"";
+    }
+
     private OrderDtos.OrderResponse toResponse(Order o) {
         return OrderDtos.OrderResponse.builder()
                 .id(o.getId())
+                .userId(o.getUser().getId())
+                .userEmail(o.getUser().getEmail())
+                .userFullName(o.getUser().getFullName())
                 .totalAmount(o.getTotalAmount())
                 .status(o.getStatus())
                 .prescriptionId(o.getPrescription() != null ? o.getPrescription().getId() : null)

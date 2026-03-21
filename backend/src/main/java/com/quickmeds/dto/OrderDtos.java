@@ -1,6 +1,7 @@
 package com.quickmeds.dto;
 
 import com.quickmeds.entity.enums.OrderStatus;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,6 +11,12 @@ public class OrderDtos {
     @Data
     public static class PlaceOrderRequest {
         private Long prescriptionId;
+    }
+
+    @Data
+    public static class UpdateOrderStatusRequest {
+        @NotNull
+        private OrderStatus status;
     }
 
     @Data @Builder
@@ -23,6 +30,9 @@ public class OrderDtos {
     @Data @Builder
     public static class OrderResponse {
         private Long id;
+        private Long userId;
+        private String userEmail;
+        private String userFullName;
         private BigDecimal totalAmount;
         private OrderStatus status;
         private Long prescriptionId;

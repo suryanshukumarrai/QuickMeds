@@ -8,6 +8,9 @@ public class PrescriptionDtos {
     @Data @Builder
     public static class PrescriptionResponse {
         private Long id;
+        private Long userId;
+        private String userEmail;
+        private String userFullName;
         private String fileName;
         private Boolean validated;
         private LocalDateTime uploadedAt;
