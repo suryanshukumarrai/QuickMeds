@@ -41,7 +41,7 @@ public class OrderDtos {
         private String userEmail;
         private String userFullName;
 
-        // ✅ keep new pricing fields
+        // ✅ pricing
         private BigDecimal originalAmount;
         private BigDecimal discountAmount;
 
@@ -51,8 +51,12 @@ public class OrderDtos {
         private Long appliedOfferId;
         private String appliedOfferTitle;
         private OrderStatus status;
+
+        // ✅ keep BOTH (merged)
+        private String cancellationReason;
         private Long addressId;
         private String deliveryAddress;
+
         private Long prescriptionId;
         private LocalDateTime createdAt;
         private List<OrderItemResponse> items;

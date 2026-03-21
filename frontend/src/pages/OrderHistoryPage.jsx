@@ -53,6 +53,11 @@ function OrderHistoryPage() {
               </div>
             </div>
             <p className="text-sm mt-1">Status: <span className="font-semibold">{order.status}</span></p>
+            {order.status === 'CANCELLED' && order.cancellationReason && (
+              <p className="text-sm mt-1 text-red-700">
+                Reason: <span className="font-semibold">{order.cancellationReason}</span>
+              </p>
+            )}
             <p className="text-sm">Total: <span className="font-semibold">{formatInr(order.totalAmount)}</span></p>
             <ul className="mt-3 text-sm text-slate-700 list-disc list-inside">
               {order.items.map((item) => (

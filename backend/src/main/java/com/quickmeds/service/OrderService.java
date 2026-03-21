@@ -51,6 +51,7 @@ public class OrderService {
 
         Prescription rx = null;
 
+        // ✅ Strict prescription validation
         if (requiresRx) {
             if (request.getPrescriptionId() == null) {
                 throw new BadRequestException("Prescription required");
@@ -99,14 +100,12 @@ public class OrderService {
 
             medicine.setStock(medicine.getStock() - item.getQuantity());
 
-            order.getItems().add(
-                    OrderItem.builder()
-                            .order(order)
-                            .medicine(medicine)
-                            .quantity(item.getQuantity())
-                            .priceAtPurchase(medicine.getPrice())
-                            .build()
-            );
+            order.getItems().add(OrderItem.builder()
+                    .order(order)
+                    .medicine(medicine)
+                    .quantity(item.getQuantity())
+                    .priceAtPurchase(medicine.getPrice())
+                    .build());
 
             BigDecimal lineTotal = medicine.getPrice()
                     .multiply(BigDecimal.valueOf(item.getQuantity()));
@@ -119,7 +118,6 @@ public class OrderService {
                     && lineOffer.get().getCategory() != null
                     && !lineOffer.get().getCategory().getId()
                     .equals(medicine.getCategory().getId())) {
-
                 lineOffer = Optional.empty();
             }
 
@@ -128,7 +126,6 @@ public class OrderService {
             }
 
             if (lineOffer.isPresent()) {
-
                 BigDecimal lineDiscount = lineTotal
                         .multiply(BigDecimal.valueOf(lineOffer.get().getDiscountPercentage()))
                         .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
@@ -139,27 +136,18 @@ public class OrderService {
 
         BigDecimal afterOffer = subtotal.subtract(offerDiscount).max(BigDecimal.ZERO);
 
-        int requestedPoints = request.getPointsToRedeem() != null
-                ? request.getPointsToRedeem()
-                : 0;
-
+        int requestedPoints = request.getPointsToRedeem() != null ? request.getPointsToRedeem() : 0;
         int maxRedeemablePoints = afterOffer.setScale(0, RoundingMode.DOWN).intValue();
-
-        int pointsToRedeem = Math.max(0,
-                Math.min(requestedPoints, maxRedeemablePoints));
+        int pointsToRedeem = Math.max(0, Math.min(requestedPoints, maxRedeemablePoints));
 
         if (pointsToRedeem > 0) {
             loyaltyService.redeemPoints(user.getId(), pointsToRedeem);
         }
 
         BigDecimal loyaltyDiscount = BigDecimal.valueOf(pointsToRedeem);
+        BigDecimal finalTotal = afterOffer.subtract(loyaltyDiscount).max(BigDecimal.ZERO);
 
-        BigDecimal finalTotal = afterOffer.subtract(loyaltyDiscount)
-                .max(BigDecimal.ZERO);
-
-        int pointsEarned = finalTotal
-                .divide(BigDecimal.TEN, 0, RoundingMode.DOWN)
-                .intValue();
+        int pointsEarned = finalTotal.divide(BigDecimal.TEN, 0, RoundingMode.DOWN).intValue();
 
         if (pointsEarned > 0) {
             loyaltyService.addPoints(user.getId(), pointsEarned);
@@ -205,27 +193,47 @@ public class OrderService {
 
         order.setStatus(status);
 
+        // ✅ cancellation handling
+        if (status == OrderStatus.CANCELLED && order.getCancellationReason() == null) {
+            order.setCancellationReason("Cancelled by admin");
+        }
+        if (status != OrderStatus.CANCELLED) {
+            order.setCancellationReason(null);
+        }
+
         return toResponse(orderRepository.save(order));
     }
 
-    public byte[] exportOrdersCsv() {
+    public void cancelOrdersByRejectedPrescription(Long prescriptionId, String reason) {
+        List<Order> orders = orderRepository.findByPrescriptionIdAndStatusIn(
+                prescriptionId,
+                List.of(OrderStatus.PLACED, OrderStatus.PROCESSING)
+        );
 
+        for (Order order : orders) {
+            order.setStatus(OrderStatus.CANCELLED);
+            order.setCancellationReason(reason);
+        }
+
+        orderRepository.saveAll(orders);
+    }
+
+    public byte[] exportOrdersCsv() {
         List<OrderDtos.OrderResponse> orders = findAll();
 
         StringBuilder sb = new StringBuilder();
-
-        sb.append("orderId,userId,userName,userEmail,totalAmount,status,createdAt,itemCount\n");
+        sb.append("orderId,userId,userName,userEmail,totalAmount,status,cancellationReason,createdAt,itemCount\n");
 
         for (OrderDtos.OrderResponse order : orders) {
             sb.append(order.getId()).append(',')
-                    .append(order.getUserId() != null ? order.getUserId() : "")
-                    .append(',')
+                    .append(order.getUserId()).append(',')
                     .append(csvValue(order.getUserFullName())).append(',')
                     .append(csvValue(order.getUserEmail())).append(',')
                     .append(order.getTotalAmount()).append(',')
                     .append(order.getStatus()).append(',')
+                    .append(csvValue(order.getCancellationReason())).append(',')
                     .append(order.getCreatedAt()).append(',')
-                    .append(order.getItems() != null ? order.getItems().size() : 0)
+                    .append(order.getItems().size())
                     .append('\n');
         }
 
@@ -234,8 +242,7 @@ public class OrderService {
 
     private String csvValue(String value) {
         if (value == null) return "";
-        String escaped = value.replace("\"", "\"\"");
-        return "\"" + escaped + "\"";
+        return "\"" + value.replace("\"", "\"\"") + "\"";
     }
 
     private OrderDtos.OrderResponse toResponse(Order o) {
@@ -264,6 +271,7 @@ public class OrderService {
                 .appliedOfferId(offer != null ? offer.getId() : null)
                 .appliedOfferTitle(offer != null ? offer.getTitle() : null)
                 .status(o.getStatus())
+                .cancellationReason(o.getCancellationReason())
                 .addressId(o.getAddress() != null ? o.getAddress().getId() : null)
                 .deliveryAddress(o.getAddress() != null
                         ? String.format("%s, %s, %s, %s",
