@@ -10,6 +10,7 @@ function AdminReportsPage() {
     cancelledOrders: 0,
     topCategoryHint: 'N/A',
   });
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -45,12 +46,39 @@ function AdminReportsPage() {
     });
   }, []);
 
+  const exportCsv = async () => {
+    try {
+      setExporting(true);
+      const response = await api.get('/admin/orders/export/csv', { responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'text/csv' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'orders-report.csv');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } finally {
+      setExporting(false);
+    }
+  };
+
   return (
     <AdminLayout>
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">Reports</h1>
           <p className="text-slate-600 mt-1">Snapshot metrics for operations and sales</p>
+        </div>
+
+        <div>
+          <button
+            onClick={exportCsv}
+            disabled={exporting}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-60"
+          >
+            {exporting ? 'Exporting...' : 'Export Orders CSV'}
+          </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

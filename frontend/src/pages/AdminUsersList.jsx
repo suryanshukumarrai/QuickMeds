@@ -7,6 +7,7 @@ function AdminUsersList() {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [updatingId, setUpdatingId] = useState(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -32,6 +33,18 @@ function AdminUsersList() {
       (u.role || '').toLowerCase().includes(q)
     );
   }, [users, query]);
+
+  const updateUserRole = async (userId, role) => {
+    try {
+      setUpdatingId(userId);
+      const { data } = await api.put(`/admin/users/${userId}/role`, { role });
+      setUsers((prev) => prev.map((u) => (u.id === userId ? data : u)));
+    } catch (err) {
+      setError(err?.response?.data?.error || 'Failed to update user role');
+    } finally {
+      setUpdatingId(null);
+    }
+  };
 
   return (
     <AdminLayout>
@@ -64,6 +77,7 @@ function AdminUsersList() {
                     <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">Name</th>
                     <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">Email</th>
                     <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">Role</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">Change Role</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -76,6 +90,17 @@ function AdminUsersList() {
                         <span className={`px-2 py-1 rounded text-xs font-semibold ${user.role === 'ROLE_ADMIN' ? 'bg-indigo-100 text-indigo-800' : 'bg-slate-100 text-slate-700'}`}>
                           {user.role}
                         </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <select
+                          value={user.role}
+                          disabled={updatingId === user.id}
+                          onChange={(e) => updateUserRole(user.id, e.target.value)}
+                          className="px-2 py-1 border border-slate-300 rounded text-sm"
+                        >
+                          <option value="ROLE_USER">ROLE_USER</option>
+                          <option value="ROLE_ADMIN">ROLE_ADMIN</option>
+                        </select>
                       </td>
                     </tr>
                   ))}

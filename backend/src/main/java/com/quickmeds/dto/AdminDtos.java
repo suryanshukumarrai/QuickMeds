@@ -1,5 +1,7 @@
 package com.quickmeds.dto;
 
+import com.quickmeds.entity.enums.RoleName;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -26,5 +28,11 @@ public class AdminDtos {
         private String fullName;
         private String email;
         private String role;
+    }
+
+    @Data
+    public static class UpdateUserRoleRequest {
+        @NotNull
+        private RoleName role;
     }
 }

@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
@@ -57,6 +57,16 @@ public class PrescriptionService {
         Prescription p = prescriptionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Prescription not found"));
         p.setValidated(validated);
         return toResponse(prescriptionRepository.save(p));
+    }
+
+    public Path getPrescriptionFilePath(Long id) {
+        Prescription p = prescriptionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Prescription not found"));
+        return Paths.get(p.getFilePath());
+    }
+
+    public String getPrescriptionOriginalFileName(Long id) {
+        Prescription p = prescriptionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Prescription not found"));
+        return p.getFileName();
     }
 
     private PrescriptionDtos.PrescriptionResponse toResponse(Prescription p) {

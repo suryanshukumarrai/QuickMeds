@@ -11,9 +11,16 @@ import com.quickmeds.service.PrescriptionService;
 import com.quickmeds.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import java.util.List;
 import java.util.Map;
@@ -70,6 +77,11 @@ public class AdminController {
         return ResponseEntity.ok(userService.findAllSummaries());
     }
 
+    @PutMapping("/users/{id}/role")
+    public ResponseEntity<AdminDtos.UserSummaryResponse> updateUserRole(@PathVariable Long id, @Valid @RequestBody AdminDtos.UpdateUserRoleRequest request) {
+        return ResponseEntity.ok(userService.updateRole(id, request.getRole()));
+    }
+
     @GetMapping("/categories")
     public ResponseEntity<List<AdminDtos.CategoryResponse>> categories() {
         return ResponseEntity.ok(categoryService.findAll());
@@ -89,5 +101,28 @@ public class AdminController {
     public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
         categoryService.delete(id);
         return ResponseEntity.ok(Map.of("message", "Category deleted"));
+    }
+
+    @GetMapping("/prescriptions/{id}/download")
+    public ResponseEntity<Resource> downloadPrescription(@PathVariable Long id) throws Exception {
+        Path filePath = prescriptionService.getPrescriptionFilePath(id);
+        byte[] content = Files.readAllBytes(filePath);
+        ByteArrayResource resource = new ByteArrayResource(content);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + prescriptionService.getPrescriptionOriginalFileName(id) + "\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(content.length)
+                .body(resource);
+    }
+
+    @GetMapping("/orders/export/csv")
+    public ResponseEntity<Resource> exportOrdersCsv() {
+        byte[] content = orderService.exportOrdersCsv();
+        ByteArrayResource resource = new ByteArrayResource(content);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"orders-report.csv\"")
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .contentLength(content.length)
+                .body(resource);
     }
 }

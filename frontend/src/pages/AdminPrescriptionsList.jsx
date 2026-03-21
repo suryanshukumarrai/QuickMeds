@@ -73,6 +73,24 @@ function AdminPrescriptionsList() {
     }
   };
 
+  const downloadPrescription = async (prescriptionId, fileName) => {
+    try {
+      const response = await api.get(`/admin/prescriptions/${prescriptionId}/download`, {
+        responseType: 'blob',
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', fileName || `prescription-${prescriptionId}`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      setError('Failed to download prescription file');
+    }
+  };
+
   return (
     <AdminLayout>
       <div className="space-y-6">
@@ -142,16 +160,22 @@ function AdminPrescriptionsList() {
                       </p>
                     </div>
 
-                    {!prescription.validated && (
-                      <div className="flex gap-2 ml-4">
+                    <div className="flex gap-2 ml-4">
+                      <button
+                        onClick={() => downloadPrescription(prescription.id, prescription.fileName)}
+                        className="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-100 text-sm font-semibold"
+                      >
+                        Download
+                      </button>
+                      {!prescription.validated && (
                         <button
                           onClick={() => setSelectedPrescription(prescription)}
                           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-semibold"
                         >
                           Review
                         </button>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -183,6 +207,12 @@ function AdminPrescriptionsList() {
                 <p className="text-slate-900 font-semibold">
                   {selectedPrescription.fileName || 'N/A'}
                 </p>
+                <button
+                  onClick={() => downloadPrescription(selectedPrescription.id, selectedPrescription.fileName)}
+                  className="mt-2 px-3 py-1 border border-slate-300 text-slate-700 rounded hover:bg-slate-100 text-sm"
+                >
+                  Download File
+                </button>
               </div>
 
               <div>
