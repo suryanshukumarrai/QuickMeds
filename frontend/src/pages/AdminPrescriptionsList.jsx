@@ -33,9 +33,11 @@ function AdminPrescriptionsList() {
   const filterPrescriptions = (presc, filter) => {
     let filtered = presc;
     if (filter === 'PENDING') {
-      filtered = presc.filter((p) => p.validated === false);
+      filtered = presc.filter((p) => !p.reviewed);
     } else if (filter === 'VALIDATED') {
-      filtered = presc.filter((p) => p.validated === true);
+      filtered = presc.filter((p) => p.reviewed && p.validated === true);
+    } else if (filter === 'REJECTED') {
+      filtered = presc.filter((p) => p.reviewed && p.validated === false);
     }
     setFilteredPrescriptions(filtered);
   };
@@ -55,12 +57,12 @@ function AdminPrescriptionsList() {
       // Update local state
       setPrescriptions((prev) =>
         prev.map((p) =>
-          p.id === prescriptionId ? { ...p, validated: isValid } : p
+          p.id === prescriptionId ? { ...p, validated: isValid, reviewed: true } : p
         )
       );
       filterPrescriptions(
         prescriptions.map((p) =>
-          p.id === prescriptionId ? { ...p, validated: isValid } : p
+          p.id === prescriptionId ? { ...p, validated: isValid, reviewed: true } : p
         ),
         validationFilter
       );
@@ -114,6 +116,7 @@ function AdminPrescriptionsList() {
             >
               <option value="PENDING">Pending Validation</option>
               <option value="VALIDATED">Validated</option>
+              <option value="REJECTED">Rejected</option>
               <option value="ALL">All Prescriptions</option>
             </select>
           </div>
@@ -137,15 +140,20 @@ function AdminPrescriptionsList() {
                         <h3 className="font-semibold text-slate-900">
                           Prescription #{prescription.id}
                         </h3>
-                        {prescription.validated ? (
+                        {!prescription.reviewed ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded font-semibold">
+                            <XCircle size={14} />
+                            Pending
+                          </span>
+                        ) : prescription.validated ? (
                           <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 text-xs rounded font-semibold">
                             <CheckCircle size={14} />
                             Validated
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded font-semibold">
+                          <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-100 text-red-700 text-xs rounded font-semibold">
                             <XCircle size={14} />
-                            Pending
+                            Rejected
                           </span>
                         )}
                       </div>
@@ -167,7 +175,7 @@ function AdminPrescriptionsList() {
                       >
                         Download
                       </button>
-                      {!prescription.validated && (
+                      {!prescription.reviewed && (
                         <button
                           onClick={() => setSelectedPrescription(prescription)}
                           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-semibold"
