@@ -22,9 +22,11 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class PrescriptionService {
     private final PrescriptionRepository prescriptionRepository;
     private final UserRepository userRepository;
+    private final OrderService orderService;
 
     @Value("${app.upload-dir}")
     private String uploadDir;
@@ -37,7 +39,7 @@ public class PrescriptionService {
             String generated = UUID.randomUUID() + "_" + file.getOriginalFilename();
             Path target = dir.resolve(generated);
             Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
-            Prescription p = prescriptionRepository.save(Prescription.builder().user(user).fileName(file.getOriginalFilename()).filePath(target.toString()).validated(false).uploadedAt(LocalDateTime.now()).build());
+            Prescription p = prescriptionRepository.save(Prescription.builder().user(user).fileName(file.getOriginalFilename()).filePath(target.toString()).validated(false).reviewed(false).uploadedAt(LocalDateTime.now()).build());
             return toResponse(p);
         } catch (IOException e) {
             throw new RuntimeException("Failed to upload prescription", e);
@@ -56,7 +58,15 @@ public class PrescriptionService {
     public PrescriptionDtos.PrescriptionResponse validate(Long id, Boolean validated) {
         Prescription p = prescriptionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Prescription not found"));
         p.setValidated(validated);
-        return toResponse(prescriptionRepository.save(p));
+        p.setReviewed(true);
+        Prescription saved = prescriptionRepository.save(p);
+        if (Boolean.FALSE.equals(validated)) {
+            orderService.cancelOrdersByRejectedPrescription(
+                    saved.getId(),
+                    "Cancelled due to prescription rejection by admin"
+            );
+        }
+        return toResponse(saved);
     }
 
     public Path getPrescriptionFilePath(Long id) {
@@ -77,6 +87,7 @@ public class PrescriptionService {
                 .userFullName(p.getUser().getFullName())
                 .fileName(p.getFileName())
                 .validated(p.getValidated())
+                .reviewed(p.getReviewed())
                 .uploadedAt(p.getUploadedAt())
                 .build();
     }

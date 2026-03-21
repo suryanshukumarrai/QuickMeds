@@ -13,6 +13,7 @@ public class PrescriptionDtos {
         private String userFullName;
         private String fileName;
         private Boolean validated;
+        private Boolean reviewed;
         private LocalDateTime uploadedAt;
     }
 

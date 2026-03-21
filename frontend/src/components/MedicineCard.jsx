@@ -1,7 +1,25 @@
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { formatInr, getMedicineImage } from '../utils/medicineUi';
 
 function MedicineCard({ medicine, onAddToCart, quantity = 0, onIncrease, onDecrease }) {
+  const dosageOptions = useMemo(() => {
+    const text = `${medicine?.name || ''} ${medicine?.categoryName || ''}`.toLowerCase();
+    if (text.includes('syrup') || text.includes('suspension') || text.includes('drops')) {
+      return ['60 ml', '100 ml', '200 ml'];
+    }
+    if (text.includes('injection') || text.includes('vial')) {
+      return ['2 ml', '5 ml', '10 ml'];
+    }
+    return ['250 mg', '500 mg', '650 mg'];
+  }, [medicine?.name, medicine?.categoryName]);
+
+  const [selectedDosage, setSelectedDosage] = useState(dosageOptions[0]);
+
+  useEffect(() => {
+    setSelectedDosage(dosageOptions[0]);
+  }, [dosageOptions]);
+
   return (
     <div className="rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-2xl transition-transform transition-shadow duration-300 ease-out hover:scale-[1.05] hover:-translate-y-2 overflow-hidden fade-in">
       <img
@@ -11,7 +29,19 @@ function MedicineCard({ medicine, onAddToCart, quantity = 0, onIncrease, onDecre
       />
       <div className="p-4">
         <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">{medicine.categoryName}</p>
-        <h3 className="text-lg font-bold mt-1">{medicine.name}</h3>
+        <div className="mt-1 flex items-start justify-between gap-2">
+          <h3 className="text-lg font-bold leading-tight">{medicine.name}</h3>
+          <select
+            value={selectedDosage}
+            onChange={(e) => setSelectedDosage(e.target.value)}
+            className="shrink-0 border border-slate-300 rounded-md px-2 py-1 text-xs font-semibold text-slate-700 bg-white"
+            aria-label={`${medicine.name} dosage`}
+          >
+            {dosageOptions.map((option) => (
+              <option key={option} value={option}>{option}</option>
+            ))}
+          </select>
+        </div>
         <p className="text-sm text-slate-600 mt-2 line-clamp-2">{medicine.description}</p>
         <div className="mt-4 flex justify-between items-center">
           <span className="font-extrabold text-brand-900">{formatInr(medicine.price)}</span>
@@ -19,6 +49,7 @@ function MedicineCard({ medicine, onAddToCart, quantity = 0, onIncrease, onDecre
             {medicine.requiresPrescription ? 'Rx Needed' : 'OTC'}
           </span>
         </div>
+        <p className="mt-2 text-xs text-slate-500">Selected dosage: {selectedDosage}</p>
         <div className="mt-4 flex gap-2">
           <Link to={`/medicines/${medicine.id}`} className="flex-1 text-center px-3 py-2 rounded-lg border border-brand-300 text-brand-700 hover:bg-brand-50">
             Details

@@ -30,5 +30,8 @@ public class Prescription {
     private Boolean validated;
 
     @Column(nullable = false)
+    private Boolean reviewed;
+
+    @Column(nullable = false)
     private LocalDateTime uploadedAt;
 }
