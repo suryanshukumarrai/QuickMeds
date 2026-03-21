@@ -29,7 +29,11 @@ function HomePage() {
   };
 
   useEffect(() => {
-    api.get('/medicines').then((res) => setMedicines(res.data.slice(0, 6)));
+    api.get('/medicines').then((res) => {
+      const rows = Array.isArray(res.data) ? res.data : [];
+      console.log('Home medicines fetched:', rows.length);
+      setMedicines(rows.slice(0, 6));
+    });
     api.get('/categories').then((res) => setCategories(res.data));
   }, []);
 
@@ -93,7 +97,7 @@ function HomePage() {
       <section id="offers" className="mx-auto max-w-6xl px-4 pb-12">
         <h2 className="text-2xl font-bold mb-4">Offers & Discounts</h2>
         <div className="grid md:grid-cols-3 gap-4">
-          {['10% off on first order', 'Free delivery above $25', 'Up to 20% on vitamins'].map((offer) => (
+          {['10% off on first order', 'Free delivery above INR 500', 'Up to 20% on vitamins'].map((offer) => (
             <div key={offer} className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
               <p className="text-sm text-slate-500">Limited time</p>
               <p className="text-lg font-bold text-brand-900 mt-2">{offer}</p>

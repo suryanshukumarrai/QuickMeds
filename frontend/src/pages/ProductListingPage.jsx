@@ -32,11 +32,18 @@ function ProductListingPage() {
   };
 
   const fetchMedicines = async () => {
-    const params = {};
-    if (search) params.search = search;
-    if (categoryId) params.categoryId = categoryId;
-    const { data } = await api.get('/medicines', { params });
-    setMedicines(data);
+    try {
+      const params = {};
+      if (search) params.search = search;
+      if (categoryId) params.categoryId = categoryId;
+      const { data } = await api.get('/medicines', { params });
+      const rows = Array.isArray(data) ? data : [];
+      console.log('GET /api/medicines rows:', rows.length, rows.slice(0, 3));
+      setMedicines(rows);
+    } catch (error) {
+      console.error('Failed to fetch medicines:', error);
+      setMedicines([]);
+    }
   };
 
   useEffect(() => {
@@ -125,6 +132,10 @@ function ProductListingPage() {
           />
         ))}
       </div>
+
+      {medicines.length === 0 && (
+        <p className="mt-6 text-slate-600">No medicines found for the selected filters.</p>
+      )}
     </div>
   );
 }
