@@ -21,6 +21,7 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final CartRepository cartRepository;
@@ -28,32 +29,78 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
+    // ✅ REGISTER
     public AuthDtos.AuthResponse register(AuthDtos.RegisterRequest request) {
+
+        // 🔒 Check duplicate email
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new BadRequestException("Email already exists");
         }
 
+        // 🔑 Fetch default role
         Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
                 .orElseThrow(() -> new BadRequestException("Default role missing"));
 
-        User user = userRepository.save(User.builder()
-                .fullName(request.getFullName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .roles(Set.of(userRole))
-                .build());
+        // 👤 Create user
+        User user = userRepository.save(
+                User.builder()
+                        .fullName(request.getFullName())
+                        .email(request.getEmail())
+                        .password(passwordEncoder.encode(request.getPassword()))
+                        .roles(Set.of(userRole))
+                        .build()
+        );
 
-        cartRepository.save(Cart.builder().user(user).build());
+        // 🛒 Create empty cart
+        cartRepository.save(
+                Cart.builder()
+                        .user(user)
+                        .build()
+        );
 
-        String token = jwtService.generateToken(user, userRole.getName().name());
-        return AuthDtos.AuthResponse.builder().token(token).email(user.getEmail()).fullName(user.getFullName()).role(userRole.getName().name()).build();
+        // 🔐 Generate token
+        String role = userRole.getName().name();
+        String token = jwtService.generateToken(user, role);
+
+        // 📦 Response
+        return AuthDtos.AuthResponse.builder()
+                .token(token)
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .role(role)
+                .build();
     }
 
+    // ✅ LOGIN
     public AuthDtos.AuthResponse login(AuthDtos.LoginRequest request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new BadRequestException("Invalid credentials"));
-        String role = user.getRoles().stream().findFirst().map(r -> r.getName().name()).orElse(RoleName.ROLE_USER.name());
+
+        // 🔐 Authenticate via Spring Security
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+
+        // 👤 Fetch user
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new BadRequestException("Invalid credentials"));
+
+        // 🎭 Extract role (safe fallback)
+        String role = user.getRoles().stream()
+                .findFirst()
+                .map(r -> r.getName().name())
+                .orElse(RoleName.ROLE_USER.name());
+
+        // 🔐 Generate token
         String token = jwtService.generateToken(user, role);
-        return AuthDtos.AuthResponse.builder().token(token).email(user.getEmail()).fullName(user.getFullName()).role(role).build();
+
+        // 📦 Response
+        return AuthDtos.AuthResponse.builder()
+                .token(token)
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .role(role)
+                .build();
     }
 }
