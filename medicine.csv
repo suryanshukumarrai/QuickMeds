@@ -1,0 +1,51 @@
+id,name,generic_name,category,price_inr,stock,requires_prescription,manufacturer,description
+1,Dolo 650,Paracetamol,Pain Relief,34,78,false,Sun Pharma,Used to reduce fever and mild body pain
+2,Crocin Advance,Paracetamol,Pain Relief,28,64,false,Cipla,Provides quick relief from fever and headache
+3,Combiflam,Ibuprofen + Paracetamol,Pain Relief,52,43,false,Dr. Reddys,Relieves pain inflammation and fever
+4,Saridon,Propyphenazone + Paracetamol + Caffeine,Pain Relief,48,57,false,Lupin,Effective for tension headache relief
+5,Voveran SR,Diclofenac Sodium,Pain Relief,96,35,false,Zydus,Used for joint pain and swelling relief
+6,Zerodol SP,Aceclofenac + Paracetamol + Serratiopeptidase,Pain Relief,142,29,false,Sun Pharma,Helps reduce musculoskeletal pain and inflammation
+7,Meftal Spas,Mefenamic Acid + Dicyclomine,Pain Relief,118,41,false,Cipla,Used for abdominal cramps and period pain
+8,Ultracet,Tramadol + Paracetamol,Pain Relief,162,22,true,Dr. Reddys,Used for moderate to severe pain management
+9,Calpol 500,Paracetamol,Pain Relief,24,88,false,Lupin,Used to relieve fever and common aches
+10,Brufen 400,Ibuprofen,Pain Relief,38,53,false,Zydus,Provides relief from pain and inflammation
+11,Azithral 500,Azithromycin,Antibiotics,119,32,true,Sun Pharma,Treats bacterial infections of throat and lungs
+12,Augmentin 625,Amoxicillin + Clavulanic Acid,Antibiotics,198,27,true,Cipla,Broad spectrum antibiotic for bacterial infections
+13,Cifran 500,Ciprofloxacin,Antibiotics,86,46,true,Dr. Reddys,Used for urinary and gastrointestinal infections
+14,Taxim-O 200,Cefixime,Antibiotics,142,34,true,Lupin,Used to treat respiratory and urinary infections
+15,Azee 500,Azithromycin,Antibiotics,112,39,true,Zydus,Treats bacterial infections in ear nose and throat
+16,Moxikind-CV 625,Amoxicillin + Clavulanic Acid,Antibiotics,176,25,true,Sun Pharma,Used for bacterial chest and sinus infections
+17,O2 Tablet,Ofloxacin + Ornidazole,Antibiotics,168,31,true,Cipla,Used for mixed bacterial and protozoal infections
+18,Doxy-1 L-DR,Doxycycline,Antibiotics,74,55,true,Dr. Reddys,Used for skin chest and sexually transmitted infections
+19,Levoflox 500,Levofloxacin,Antibiotics,129,37,true,Lupin,Used for severe bacterial respiratory infections
+20,Monocef-O 200,Cefpodoxime,Antibiotics,154,28,true,Zydus,Used for bacterial infections of lungs and throat
+21,Cetcip,Cetirizine,Cold & Flu,32,69,false,Sun Pharma,Relieves sneezing runny nose and allergy symptoms
+22,Okacet,Cetirizine,Cold & Flu,26,73,false,Cipla,Provides relief from cold related allergic symptoms
+23,Sinarest,Chlorpheniramine + Paracetamol + Phenylephrine,Cold & Flu,58,48,false,Dr. Reddys,Relieves nasal congestion headache and fever
+24,Vicks Action 500,Paracetamol + Caffeine + Phenylephrine,Cold & Flu,44,62,false,Lupin,Used for common cold body ache and blocked nose
+25,Cheston Cold,Paracetamol + Phenylephrine + Chlorpheniramine,Cold & Flu,49,51,false,Zydus,Helps manage cold symptoms with mild fever
+26,Benadryl Cough Formula,Dextromethorphan + Diphenhydramine,Cold & Flu,92,36,false,Sun Pharma,Provides relief from dry cough and irritation
+27,Ascoril LS,Ambroxol + Levosalbutamol + Guaifenesin,Cold & Flu,109,33,false,Cipla,Used for productive cough and chest congestion
+28,Alex Cough Lozenges,Hexylresorcinol,Cold & Flu,35,82,false,Dr. Reddys,Soothes sore throat and mild cough
+29,Honitus Cough Syrup,Herbal Blend,Cold & Flu,115,40,false,Lupin,Herbal syrup for cough and throat comfort
+30,Wikoryl,Paracetamol + Phenylephrine + Chlorpheniramine,Cold & Flu,47,58,false,Zydus,Relieves fever sneezing and nasal blockage
+31,Becosules Capsule,B Complex Vitamins,Vitamins & Supplements,52,76,false,Sun Pharma,Helps prevent and treat vitamin B deficiency
+32,Shelcal 500,Calcium + Vitamin D3,Vitamins & Supplements,138,45,false,Cipla,Supports bone strength and calcium levels
+33,Revital H,Multivitamin + Ginseng,Vitamins & Supplements,320,30,false,Dr. Reddys,Daily supplement for energy and immunity support
+34,Neurobion Forte,Methylcobalamin + B Complex,Vitamins & Supplements,42,66,false,Lupin,Supports nerve health and vitamin B levels
+35,Limcee 500,Vitamin C,Vitamins & Supplements,28,90,false,Zydus,Boosts immunity and supports recovery from fatigue
+36,Zincovit,Multivitamin + Zinc,Vitamins & Supplements,118,54,false,Sun Pharma,Supports immunity appetite and daily nutrition
+37,Supradyn Daily,Multivitamin + Minerals,Vitamins & Supplements,162,47,false,Cipla,Daily multivitamin for overall wellness
+38,Evion 400,Vitamin E,Vitamins & Supplements,36,71,false,Dr. Reddys,Used for vitamin E supplementation and skin health
+39,A to Z NS,Multivitamin + Minerals,Vitamins & Supplements,94,59,false,Lupin,Supports daily nutritional balance and vitality
+40,Livogen,Iron + Folic Acid,Vitamins & Supplements,126,38,false,Zydus,Used to prevent and treat iron deficiency anemia
+41,Digene Gel,Aluminium Hydroxide + Magnesium Hydroxide + Simethicone,Digestive Health,145,44,false,Sun Pharma,Provides relief from acidity gas and heartburn
+42,ENO Fruit Salt,Sodium Bicarbonate + Citric Acid,Digestive Health,12,96,false,Cipla,Fast relief from acidity and indigestion
+43,Gelusil MPS,Aluminium Hydroxide + Magnesium + Simethicone,Digestive Health,118,49,false,Dr. Reddys,Relieves acidity bloating and abdominal discomfort
+44,Pudin Hara Pearls,Peppermint Oil,Digestive Health,26,84,false,Lupin,Helps relieve gas and minor stomach discomfort
+45,Pan D,Pantoprazole + Domperidone,Digestive Health,172,27,true,Zydus,Used for reflux acidity and nausea control
+46,Pantocid 40,Pantoprazole,Digestive Health,108,42,true,Sun Pharma,Reduces stomach acid and heartburn symptoms
+47,Emoz 40,Esomeprazole,Digestive Health,132,36,true,Cipla,Used in acid reflux and gastric ulcer treatment
+48,Cyclopam,Dicyclomine + Simethicone,Digestive Health,54,63,false,Dr. Reddys,Relieves abdominal cramps and stomach spasms
+49,Cremaffin Liquid,Milk of Magnesia + Liquid Paraffin,Digestive Health,176,24,false,Lupin,Used for constipation relief and smooth bowel movement
+50,Electral ORS,Oral Rehydration Salts,Digestive Health,22,87,false,Zydus,Prevents dehydration due to diarrhea and vomiting
