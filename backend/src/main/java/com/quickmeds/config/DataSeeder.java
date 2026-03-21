@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -104,7 +105,7 @@ public class DataSeeder implements CommandLineRunner {
                             .price(new BigDecimal("349.00"))
                             .discountPercentage(15)
                             .imageUrl("https://images.unsplash.com/photo-1611242320536-f12d3541249b?w=900")
-                            .includedMedicines(Set.of(vitaminC, multivitamin))
+                            .includedMedicines(new HashSet<>(List.of(vitaminC, multivitamin)))
                             .build(),
                         HealthPackage.builder()
                             .name("Cold & Recovery Pack")
@@ -112,7 +113,7 @@ public class DataSeeder implements CommandLineRunner {
                             .price(new BigDecimal("429.00"))
                             .discountPercentage(20)
                             .imageUrl("https://images.unsplash.com/photo-1585435557343-3b092031a831?w=900")
-                            .includedMedicines(Set.of(paracetamol, coughSyrup))
+                            .includedMedicines(new HashSet<>(List.of(paracetamol, coughSyrup)))
                             .build(),
                         HealthPackage.builder()
                             .name("Pain Care Combo")
@@ -120,7 +121,7 @@ public class DataSeeder implements CommandLineRunner {
                             .price(new BigDecimal("299.00"))
                             .discountPercentage(12)
                             .imageUrl("https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=900")
-                            .includedMedicines(Set.of(paracetamol, ibuprofen))
+                            .includedMedicines(new HashSet<>(List.of(paracetamol, ibuprofen)))
                             .build()
                     ));
                 }
@@ -164,6 +165,7 @@ public class DataSeeder implements CommandLineRunner {
                 return medicines.stream()
                     .filter(medicine -> medicine.getName().toLowerCase().contains(key.toLowerCase()))
                     .findFirst()
-                    .orElseThrow(() -> new IllegalStateException("Seed medicine missing for key: " + key));
+                    .orElseGet(() -> medicines.stream().findFirst()
+                        .orElseThrow(() -> new IllegalStateException("No medicines available to seed health packages")));
                 }
 }

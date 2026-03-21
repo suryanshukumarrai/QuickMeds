@@ -15,8 +15,12 @@ function Navbar() {
       setCartCount(0);
       return;
     }
-    const { data } = await api.get('/cart');
-    setCartCount(getCartItemCount(data));
+    try {
+      const { data } = await api.get('/cart');
+      setCartCount(getCartItemCount(data));
+    } catch {
+      setCartCount(0);
+    }
   };
 
   useEffect(() => {
