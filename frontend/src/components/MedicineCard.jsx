@@ -21,7 +21,7 @@ function MedicineCard({ medicine, onAddToCart, quantity = 0, onIncrease, onDecre
   }, [dosageOptions]);
 
   return (
-    <div className="rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition overflow-hidden fade-in">
+    <div className="rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-2xl transition-transform transition-shadow duration-300 ease-out hover:scale-[1.05] hover:-translate-y-2 overflow-hidden fade-in">
       <img
         src={getMedicineImage(medicine)}
         alt={medicine.name}

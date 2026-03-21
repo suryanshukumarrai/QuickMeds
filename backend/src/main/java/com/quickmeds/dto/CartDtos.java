@@ -23,6 +23,8 @@ public class CartDtos {
         private Long id;
         private Long medicineId;
         private String medicineName;
+        private Long categoryId;
+        private String categoryName;
         private BigDecimal price;
         private Integer quantity;
         private BigDecimal lineTotal;
