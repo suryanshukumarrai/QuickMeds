@@ -3,22 +3,49 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../api/client';
 import MedicineCard from '../components/MedicineCard';
 import { useAuth } from '../contexts/AuthContext';
+import { emitCartUpdated } from '../utils/cartEvents';
 
 function ProductListingPage() {
   const [medicines, setMedicines] = useState([]);
   const [categories, setCategories] = useState([]);
   const [search, setSearch] = useState('');
+  const [cartItemsByMedicine, setCartItemsByMedicine] = useState({});
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryId = searchParams.get('categoryId') || '';
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
+  const syncCartState = (cartData) => {
+    const next = {};
+    (cartData?.items || []).forEach((item) => {
+      next[item.medicineId] = { itemId: item.id, quantity: item.quantity };
+    });
+    setCartItemsByMedicine(next);
+    emitCartUpdated(cartData);
+  };
+
+  const loadCart = async () => {
+    if (!isAuthenticated) {
+      setCartItemsByMedicine({});
+      return;
+    }
+    const { data } = await api.get('/cart');
+    syncCartState(data);
+  };
+
   const fetchMedicines = async () => {
-    const params = {};
-    if (search) params.search = search;
-    if (categoryId) params.categoryId = categoryId;
-    const { data } = await api.get('/medicines', { params });
-    setMedicines(data);
+    try {
+      const params = {};
+      if (search) params.search = search;
+      if (categoryId) params.categoryId = categoryId;
+      const { data } = await api.get('/medicines', { params });
+      const rows = Array.isArray(data) ? data : [];
+      console.log('GET /api/medicines rows:', rows.length, rows.slice(0, 3));
+      setMedicines(rows);
+    } catch (error) {
+      console.error('Failed to fetch medicines:', error);
+      setMedicines([]);
+    }
   };
 
   useEffect(() => {
@@ -29,13 +56,47 @@ function ProductListingPage() {
     api.get('/categories').then((res) => setCategories(res.data));
   }, []);
 
+  useEffect(() => {
+    loadCart();
+  }, [isAuthenticated]);
+
   const handleAddToCart = async (medicine) => {
     if (!isAuthenticated) {
       navigate('/login');
       return;
     }
-    await api.post('/cart/items', { medicineId: medicine.id, quantity: 1 });
-    navigate('/cart');
+    const { data } = await api.post('/cart/items', { medicineId: medicine.id, quantity: 1 });
+    syncCartState(data);
+  };
+
+  const handleIncreaseQty = async (medicine) => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+    const existing = cartItemsByMedicine[medicine.id];
+    if (!existing) {
+      await handleAddToCart(medicine);
+      return;
+    }
+    const { data } = await api.put(`/cart/items/${existing.itemId}`, { quantity: existing.quantity + 1 });
+    syncCartState(data);
+  };
+
+  const handleDecreaseQty = async (medicine) => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+    const existing = cartItemsByMedicine[medicine.id];
+    if (!existing) return;
+    if (existing.quantity <= 1) {
+      const { data } = await api.delete(`/cart/items/${existing.itemId}`);
+      syncCartState(data);
+      return;
+    }
+    const { data } = await api.put(`/cart/items/${existing.itemId}`, { quantity: existing.quantity - 1 });
+    syncCartState(data);
   };
 
   return (
@@ -63,9 +124,20 @@ function ProductListingPage() {
 
       <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {medicines.map((medicine) => (
-          <MedicineCard key={medicine.id} medicine={medicine} onAddToCart={handleAddToCart} />
+          <MedicineCard
+            key={medicine.id}
+            medicine={medicine}
+            onAddToCart={handleAddToCart}
+            quantity={cartItemsByMedicine[medicine.id]?.quantity || 0}
+            onIncrease={handleIncreaseQty}
+            onDecrease={handleDecreaseQty}
+          />
         ))}
       </div>
+
+      {medicines.length === 0 && (
+        <p className="mt-6 text-slate-600">No medicines found for the selected filters.</p>
+      )}
     </div>
   );
 }

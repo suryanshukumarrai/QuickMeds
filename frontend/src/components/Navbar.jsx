@@ -1,12 +1,39 @@
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import api from '../api/client';
 import { useAuth } from '../contexts/AuthContext';
+import { CART_UPDATED_EVENT, getCartItemCount } from '../utils/cartEvents';
 
 function Navbar() {
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [cartCount, setCartCount] = useState(0);
+
+  const loadCartCount = async () => {
+    if (!isAuthenticated) {
+      setCartCount(0);
+      return;
+    }
+    const { data } = await api.get('/cart');
+    setCartCount(getCartItemCount(data));
+  };
+
+  useEffect(() => {
+    loadCartCount();
+  }, [isAuthenticated, location.pathname]);
+
+  useEffect(() => {
+    const handleCartUpdated = (event) => {
+      setCartCount(getCartItemCount(event.detail?.cartData));
+    };
+    window.addEventListener(CART_UPDATED_EVENT, handleCartUpdated);
+    return () => window.removeEventListener(CART_UPDATED_EVENT, handleCartUpdated);
+  }, []);
 
   const handleLogout = () => {
     logout();
+    setCartCount(0);
     navigate('/');
   };
 
@@ -20,7 +47,16 @@ function Navbar() {
         <div className="flex items-center gap-2">
           <NavLink to="/" className={navClass}>Home</NavLink>
           <NavLink to="/medicines" className={navClass}>Medicines</NavLink>
-          <NavLink to="/cart" className={navClass}>Cart</NavLink>
+          <NavLink to="/cart" className={navClass}>
+            <span className="inline-flex items-center gap-1">
+              Cart
+              {cartCount > 0 && (
+                <span className="min-w-5 h-5 px-1 inline-flex items-center justify-center rounded-full bg-brand-700 text-white text-[11px] leading-none">
+                  {cartCount}
+                </span>
+              )}
+            </span>
+          </NavLink>
           {isAuthenticated && <NavLink to="/orders" className={navClass}>Orders</NavLink>}
           {isAuthenticated && user?.role === 'ROLE_ADMIN' && <NavLink to="/admin/dashboard" className={navClass}>Admin</NavLink>}
         </div>

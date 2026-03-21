@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../api/client';
+import { formatInr } from '../utils/medicineUi';
 
 function OrderHistoryPage() {
   const [orders, setOrders] = useState([]);
@@ -20,7 +21,7 @@ function OrderHistoryPage() {
               <p className="text-sm text-slate-600">{new Date(order.createdAt).toLocaleString()}</p>
             </div>
             <p className="text-sm mt-1">Status: <span className="font-semibold">{order.status}</span></p>
-            <p className="text-sm">Total: <span className="font-semibold">${order.totalAmount}</span></p>
+            <p className="text-sm">Total: <span className="font-semibold">{formatInr(order.totalAmount)}</span></p>
             <ul className="mt-3 text-sm text-slate-700 list-disc list-inside">
               {order.items.map((item) => (
                 <li key={`${order.id}-${item.medicineId}`}>{item.medicineName} x {item.quantity}</li>
