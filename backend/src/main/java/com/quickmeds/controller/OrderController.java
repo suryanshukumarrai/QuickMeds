@@ -2,6 +2,7 @@ package com.quickmeds.controller;
 
 import com.quickmeds.dto.OrderDtos;
 import com.quickmeds.service.OrderService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -16,7 +17,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<OrderDtos.OrderResponse> place(Authentication authentication, @RequestBody OrderDtos.PlaceOrderRequest request) {
+    public ResponseEntity<OrderDtos.OrderResponse> place(Authentication authentication, @Valid @RequestBody OrderDtos.PlaceOrderRequest request) {
         return ResponseEntity.ok(orderService.place(authentication.getName(), request));
     }
 
