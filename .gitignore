@@ -14,3 +14,10 @@ frontend/dist/
 !.env.example
 backend/.env
 frontend/.env
+
+# Local editor settings
+.idea/
+.vscode/
+
+# Runtime logs
+*.log

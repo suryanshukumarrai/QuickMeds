@@ -22,6 +22,7 @@ function Navbar() {
           <NavLink to="/medicines" className={navClass}>Medicines</NavLink>
           <NavLink to="/cart" className={navClass}>Cart</NavLink>
           {isAuthenticated && <NavLink to="/orders" className={navClass}>Orders</NavLink>}
+          {isAuthenticated && user?.role === 'ROLE_ADMIN' && <NavLink to="/admin/dashboard" className={navClass}>Admin</NavLink>}
         </div>
         <div className="flex items-center gap-2">
           {isAuthenticated ? (
