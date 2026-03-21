@@ -9,6 +9,8 @@ import ProductListingPage from './pages/ProductListingPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import CartPage from './pages/CartPage';
 import OrderHistoryPage from './pages/OrderHistoryPage';
+import PackagesPage from './pages/PackagesPage';
+import AddressPage from './pages/AddressPage';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminMedicinesList from './pages/AdminMedicinesList';
 import AdminMedicineForm from './pages/AdminMedicineForm';
@@ -28,6 +30,8 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/medicines" element={<ProductListingPage />} />
         <Route path="/medicines/:id" element={<ProductDetailPage />} />
+        <Route path="/packages" element={<PackagesPage />} />
+        <Route path="/addresses/new" element={<ProtectedRoute><AddressPage /></ProtectedRoute>} />
         <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
         <Route path="/orders" element={<ProtectedRoute><OrderHistoryPage /></ProtectedRoute>} />
         <Route path="/admin/dashboard" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />

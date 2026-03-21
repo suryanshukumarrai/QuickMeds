@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -20,6 +22,9 @@ public class DataSeeder implements CommandLineRunner {
     private final CategoryRepository categoryRepository;
     private final MedicineRepository medicineRepository;
     private final CartRepository cartRepository;
+    private final HealthPackageRepository healthPackageRepository;
+    private final OfferRepository offerRepository;
+    private final LoyaltyPointsRepository loyaltyPointsRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -50,5 +55,82 @@ public class DataSeeder implements CommandLineRunner {
                     Medicine.builder().name("Antibiotic Course Rx").description("Prescription antibiotic tablets").price(new BigDecimal("22.99")).stock(60).requiresPrescription(true).imageUrl("https://images.unsplash.com/photo-1576671081837-49000212a370?w=600").category(cold).build()
             ));
         }
+
+                if (healthPackageRepository.count() == 0) {
+                    List<Medicine> medicines = medicineRepository.findAll();
+                    Medicine paracetamol = findByName(medicines, "Paracetamol");
+                    Medicine vitaminC = findByName(medicines, "Vitamin C");
+                    Medicine multivitamin = findByName(medicines, "Multivitamin");
+                    Medicine ibuprofen = findByName(medicines, "Ibuprofen");
+                    Medicine coughSyrup = findByName(medicines, "Cough Syrup");
+
+                    healthPackageRepository.saveAll(List.of(
+                        HealthPackage.builder()
+                            .name("Immunity Starter Pack")
+                            .description("Daily immune support essentials for seasonal wellness.")
+                            .price(new BigDecimal("349.00"))
+                            .discountPercentage(15)
+                            .imageUrl("https://images.unsplash.com/photo-1611242320536-f12d3541249b?w=900")
+                            .includedMedicines(Set.of(vitaminC, multivitamin))
+                            .build(),
+                        HealthPackage.builder()
+                            .name("Cold & Recovery Pack")
+                            .description("Relief combo for fever, cough, and mild body pain.")
+                            .price(new BigDecimal("429.00"))
+                            .discountPercentage(20)
+                            .imageUrl("https://images.unsplash.com/photo-1585435557343-3b092031a831?w=900")
+                            .includedMedicines(Set.of(paracetamol, coughSyrup))
+                            .build(),
+                        HealthPackage.builder()
+                            .name("Pain Care Combo")
+                            .description("Quick pain management essentials at a value price.")
+                            .price(new BigDecimal("299.00"))
+                            .discountPercentage(12)
+                            .imageUrl("https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=900")
+                            .includedMedicines(Set.of(paracetamol, ibuprofen))
+                            .build()
+                    ));
+                }
+
+                if (offerRepository.count() == 0) {
+                    Category vitaminsCategory = categoryRepository.findByName("Vitamins").orElse(null);
+                    offerRepository.saveAll(List.of(
+                        Offer.builder()
+                            .title("Spring Immunity Boost")
+                            .description("Get 20% off on vitamins and supplements this season.")
+                            .discountPercentage(20)
+                            .validFrom(LocalDate.now().minusDays(3))
+                            .validTill(LocalDate.now().plusDays(20))
+                            .category(vitaminsCategory)
+                            .active(true)
+                            .build(),
+                        Offer.builder()
+                            .title("Wellness Weekend")
+                            .description("Flat 10% off on all medicines this week.")
+                            .discountPercentage(10)
+                            .validFrom(LocalDate.now().minusDays(1))
+                            .validTill(LocalDate.now().plusDays(7))
+                            .category(null)
+                            .active(true)
+                            .build()
+                    ));
+                }
+
+                if (loyaltyPointsRepository.count() == 0) {
+                    userRepository.findAll().forEach(user -> loyaltyPointsRepository.save(
+                        LoyaltyPoints.builder()
+                            .user(user)
+                            .points("admin@quickmeds.com".equalsIgnoreCase(user.getEmail()) ? 150 : 80)
+                            .lastUpdated(LocalDateTime.now())
+                            .build()
+                    ));
+                }
     }
+
+                private Medicine findByName(List<Medicine> medicines, String key) {
+                return medicines.stream()
+                    .filter(medicine -> medicine.getName().toLowerCase().contains(key.toLowerCase()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("Seed medicine missing for key: " + key));
+                }
 }

@@ -32,6 +32,10 @@ public class Order {
     @JoinColumn(name = "prescription_id")
     private Prescription prescription;
 
+    @ManyToOne
+    @JoinColumn(name = "address_id")
+    private Address address;
+
     @Column(nullable = false)
     private BigDecimal totalAmount;
 

@@ -10,7 +10,11 @@ import lombok.*;
 public class OrderDtos {
     @Data
     public static class PlaceOrderRequest {
+        @NotNull
+        private Long addressId;
         private Long prescriptionId;
+        private Long offerId;
+        private Integer pointsToRedeem;
     }
 
     @Data
@@ -33,8 +37,16 @@ public class OrderDtos {
         private Long userId;
         private String userEmail;
         private String userFullName;
+        private BigDecimal originalAmount;
+        private BigDecimal discountAmount;
         private BigDecimal totalAmount;
+        private Integer loyaltyPointsUsed;
+        private Integer loyaltyPointsEarned;
+        private Long appliedOfferId;
+        private String appliedOfferTitle;
         private OrderStatus status;
+        private Long addressId;
+        private String deliveryAddress;
         private Long prescriptionId;
         private LocalDateTime createdAt;
         private List<OrderItemResponse> items;

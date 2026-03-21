@@ -47,6 +47,7 @@ function Navbar() {
         <div className="flex items-center gap-2">
           <NavLink to="/" className={navClass}>Home</NavLink>
           <NavLink to="/medicines" className={navClass}>Medicines</NavLink>
+          <NavLink to="/packages" className={navClass}>Packages</NavLink>
           <NavLink to="/cart" className={navClass}>
             <span className="inline-flex items-center gap-1">
               Cart
