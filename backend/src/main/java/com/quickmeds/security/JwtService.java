@@ -1,48 +1,55 @@
 package com.quickmeds.security;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+import com.quickmeds.entity.User;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import java.util.Date;
-import java.util.Map;
-import java.util.function.Function;
-import javax.crypto.SecretKey;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 @Service
 public class JwtService {
 
-    @Value("${app.jwt.secret}")
-    private String secret;
+    private static final String SECRET_KEY = "mysecretkey123456mysecretkey123456mysecretkey123456";
 
-    @Value("${app.jwt.expiration-ms}")
-    private long expirationMs;
+    public String generateToken(User user, String role) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", role);
 
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
-
-    public <T> T extractClaim(String token, Function<Claims, T> resolver) {
-        return resolver.apply(Jwts.parser().verifyWith(signingKey()).build().parseSignedClaims(token).getPayload());
-    }
-
-    public String generateToken(UserDetails userDetails, String role) {
         return Jwts.builder()
-                .claims(Map.of("role", role))
-                .subject(userDetails.getUsername())
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expirationMs))
-                .signWith(signingKey())
+                .setClaims(claims)
+                .setSubject(user.getEmail())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        return extractUsername(token).equals(userDetails.getUsername()) && extractClaim(token, Claims::getExpiration).after(new Date());
+    public String extractUsername(String token) {
+        return extractAllClaims(token).getSubject();
     }
 
-    private SecretKey signingKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes());
+    public String extractRole(String token) {
+        return extractAllClaims(token).get("role", String.class);
+    }
+
+    public boolean validateToken(String token, String username) {
+        return extractUsername(token).equals(username) && !isTokenExpired(token);
+    }
+
+    private boolean isTokenExpired(String token) {
+        return extractAllClaims(token).getExpiration().before(new Date());
+    }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token)
+                .getBody();
     }
 }

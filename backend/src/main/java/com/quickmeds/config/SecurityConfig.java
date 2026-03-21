@@ -2,6 +2,11 @@ package com.quickmeds.config;
 
 import java.util.List;
 
+import com.quickmeds.security.CustomUserDetailsService;
+import com.quickmeds.security.JwtAuthFilter;
+import com.quickmeds.security.JwtAuthenticationEntryPoint;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,12 +25,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import com.quickmeds.security.CustomUserDetailsService;
-import com.quickmeds.security.JwtAuthFilter;
-import com.quickmeds.security.JwtAuthenticationEntryPoint;
-
-import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
@@ -47,12 +46,20 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(authEntryPoint))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/api/medicines/**", "/api/categories/**", "/v3/api-docs/**",
-                        "/swagger-ui/**", "/swagger-ui.html", "/api/packages/**", "/api/offers/active")
-                        .permitAll()
+                        .requestMatchers(
+                                "/api/auth/**",
+                                "/api/medicines/**",
+                                "/api/categories/**",
+                                "/api/packages/**",
+                                "/api/offers/active",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
@@ -87,6 +94,7 @@ public class SecurityConfig {
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;

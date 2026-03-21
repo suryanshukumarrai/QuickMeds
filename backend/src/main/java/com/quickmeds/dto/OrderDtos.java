@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.*;
 
 public class OrderDtos {
+
     @Data
     public static class PlaceOrderRequest {
         @NotNull
@@ -23,7 +24,8 @@ public class OrderDtos {
         private OrderStatus status;
     }
 
-    @Data @Builder
+    @Data
+    @Builder
     public static class OrderItemResponse {
         private Long medicineId;
         private String medicineName;
@@ -31,14 +33,18 @@ public class OrderDtos {
         private BigDecimal priceAtPurchase;
     }
 
-    @Data @Builder
+    @Data
+    @Builder
     public static class OrderResponse {
         private Long id;
         private Long userId;
         private String userEmail;
         private String userFullName;
+
+        // ✅ keep new pricing fields
         private BigDecimal originalAmount;
         private BigDecimal discountAmount;
+
         private BigDecimal totalAmount;
         private Integer loyaltyPointsUsed;
         private Integer loyaltyPointsEarned;

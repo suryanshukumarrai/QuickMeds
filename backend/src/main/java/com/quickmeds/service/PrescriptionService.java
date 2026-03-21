@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
@@ -49,13 +49,35 @@ public class PrescriptionService {
         return prescriptionRepository.findByUserOrderByUploadedAtDesc(user).stream().map(this::toResponse).toList();
     }
 
+    public List<PrescriptionDtos.PrescriptionResponse> findAll() {
+        return prescriptionRepository.findAllByOrderByUploadedAtDesc().stream().map(this::toResponse).toList();
+    }
+
     public PrescriptionDtos.PrescriptionResponse validate(Long id, Boolean validated) {
         Prescription p = prescriptionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Prescription not found"));
         p.setValidated(validated);
         return toResponse(prescriptionRepository.save(p));
     }
 
+    public Path getPrescriptionFilePath(Long id) {
+        Prescription p = prescriptionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Prescription not found"));
+        return Paths.get(p.getFilePath());
+    }
+
+    public String getPrescriptionOriginalFileName(Long id) {
+        Prescription p = prescriptionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Prescription not found"));
+        return p.getFileName();
+    }
+
     private PrescriptionDtos.PrescriptionResponse toResponse(Prescription p) {
-        return PrescriptionDtos.PrescriptionResponse.builder().id(p.getId()).fileName(p.getFileName()).validated(p.getValidated()).uploadedAt(p.getUploadedAt()).build();
+        return PrescriptionDtos.PrescriptionResponse.builder()
+                .id(p.getId())
+                .userId(p.getUser().getId())
+                .userEmail(p.getUser().getEmail())
+                .userFullName(p.getUser().getFullName())
+                .fileName(p.getFileName())
+                .validated(p.getValidated())
+                .uploadedAt(p.getUploadedAt())
+                .build();
     }
 }

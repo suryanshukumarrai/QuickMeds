@@ -9,8 +9,11 @@ import ProductListingPage from './pages/ProductListingPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import CartPage from './pages/CartPage';
 import OrderHistoryPage from './pages/OrderHistoryPage';
+
+// ✅ keep these (used in routes)
 import PackagesPage from './pages/PackagesPage';
 import AddressPage from './pages/AddressPage';
+
 import AdminDashboard from './pages/AdminDashboard';
 import AdminMedicinesList from './pages/AdminMedicinesList';
 import AdminMedicineForm from './pages/AdminMedicineForm';
@@ -30,10 +33,15 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/medicines" element={<ProductListingPage />} />
         <Route path="/medicines/:id" element={<ProductDetailPage />} />
+
+        {/* ✅ feature routes */}
         <Route path="/packages" element={<PackagesPage />} />
         <Route path="/addresses/new" element={<ProtectedRoute><AddressPage /></ProtectedRoute>} />
+
         <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
         <Route path="/orders" element={<ProtectedRoute><OrderHistoryPage /></ProtectedRoute>} />
+
+        {/* ✅ admin routes */}
         <Route path="/admin/dashboard" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
         <Route path="/admin/medicines" element={<ProtectedAdminRoute><AdminMedicinesList /></ProtectedAdminRoute>} />
         <Route path="/admin/medicines/new" element={<ProtectedAdminRoute><AdminMedicineForm /></ProtectedAdminRoute>} />
@@ -43,6 +51,7 @@ function App() {
         <Route path="/admin/users" element={<ProtectedAdminRoute><AdminUsersList /></ProtectedAdminRoute>} />
         <Route path="/admin/categories" element={<ProtectedAdminRoute><AdminCategoriesPage /></ProtectedAdminRoute>} />
         <Route path="/admin/reports" element={<ProtectedAdminRoute><AdminReportsPage /></ProtectedAdminRoute>} />
+
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>
