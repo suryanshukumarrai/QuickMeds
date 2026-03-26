@@ -58,7 +58,7 @@ public class MedicineService {
 
     public MedicineDtos.MedicineResponse create(MedicineDtos.MedicineRequest request) {
         Category category = categoryRepository.findById(request.getCategoryId()).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
-        Medicine medicine = Medicine.builder().name(request.getName()).description(request.getDescription()).price(request.getPrice()).stock(request.getStock()).requiresPrescription(request.getRequiresPrescription()).imageUrl(request.getImageUrl()).category(category).build();
+        Medicine medicine = Medicine.builder().name(request.getName()).description(request.getDescription()).price(request.getPrice()).stock(request.getStock()).requiresPrescription(request.getRequiresPrescription()).dosage(request.getDosage()).imageUrl(request.getImageUrl()).category(category).build();
         return toResponse(medicineRepository.save(medicine));
     }
 
@@ -70,6 +70,7 @@ public class MedicineService {
         medicine.setPrice(request.getPrice());
         medicine.setStock(request.getStock());
         medicine.setRequiresPrescription(request.getRequiresPrescription());
+        medicine.setDosage(request.getDosage());
         medicine.setImageUrl(request.getImageUrl());
         medicine.setCategory(category);
         return toResponse(medicineRepository.save(medicine));
@@ -81,7 +82,7 @@ public class MedicineService {
     }
 
     private MedicineDtos.MedicineResponse toResponse(Medicine medicine) {
-        return MedicineDtos.MedicineResponse.builder().id(medicine.getId()).name(medicine.getName()).description(medicine.getDescription()).price(medicine.getPrice()).stock(medicine.getStock()).requiresPrescription(medicine.getRequiresPrescription()).imageUrl(medicine.getImageUrl()).categoryId(medicine.getCategory().getId()).categoryName(medicine.getCategory().getName()).build();
+        return MedicineDtos.MedicineResponse.builder().id(medicine.getId()).name(medicine.getName()).description(medicine.getDescription()).price(medicine.getPrice()).priceInr(medicine.getPrice() != null ? medicine.getPrice().intValue() : null).stock(medicine.getStock()).requiresPrescription(medicine.getRequiresPrescription()).dosage(medicine.getDosage()).imageUrl(medicine.getImageUrl()).categoryId(medicine.getCategory().getId()).categoryName(medicine.getCategory().getName()).build();
     }
 
     private boolean hasImportedMedicineRows() {
@@ -94,7 +95,7 @@ public class MedicineService {
     }
 
     private List<MedicineDtos.MedicineResponse> findAllFromImportedTable(String search, Long categoryId) {
-        StringBuilder sql = new StringBuilder("SELECT id, name, description, price_inr, stock, requires_prescription, category FROM medicine WHERE 1=1");
+        StringBuilder sql = new StringBuilder("SELECT id, name, description, dosage, price_inr, stock, requires_prescription, category FROM medicine WHERE 1=1");
         List<Object> params = new ArrayList<>();
 
         if (search != null && !search.isBlank()) {
@@ -110,29 +111,33 @@ public class MedicineService {
 
         sql.append(" ORDER BY id");
 
-        return jdbcTemplate.query(sql.toString(), params.toArray(), (rs, rowNum) -> MedicineDtos.MedicineResponse.builder()
+        return jdbcTemplate.query(sql.toString(), (rs, rowNum) -> MedicineDtos.MedicineResponse.builder()
                 .id(rs.getLong("id"))
                 .name(rs.getString("name"))
                 .description(rs.getString("description"))
                 .price(BigDecimal.valueOf(rs.getInt("price_inr")))
+            .priceInr(rs.getInt("price_inr"))
                 .stock(rs.getInt("stock"))
                 .requiresPrescription(rs.getBoolean("requires_prescription"))
+            .dosage(rs.getString("dosage"))
                 .imageUrl(null)
                 .categoryName(rs.getString("category"))
                 .categoryId(categoryRepository.findByName(rs.getString("category")).map(Category::getId).orElse(null))
-                .build());
+                .build(), params.toArray());
     }
 
     private MedicineDtos.MedicineResponse findByIdFromImportedTable(Long id) {
         List<MedicineDtos.MedicineResponse> result = jdbcTemplate.query(
-                "SELECT id, name, description, price_inr, stock, requires_prescription, category FROM medicine WHERE id = ?",
+            "SELECT id, name, description, dosage, price_inr, stock, requires_prescription, category FROM medicine WHERE id = ?",
                 (rs, rowNum) -> MedicineDtos.MedicineResponse.builder()
                         .id(rs.getLong("id"))
                         .name(rs.getString("name"))
                         .description(rs.getString("description"))
                         .price(BigDecimal.valueOf(rs.getInt("price_inr")))
+                .priceInr(rs.getInt("price_inr"))
                         .stock(rs.getInt("stock"))
                         .requiresPrescription(rs.getBoolean("requires_prescription"))
+                .dosage(rs.getString("dosage"))
                         .imageUrl(null)
                         .categoryName(rs.getString("category"))
                         .categoryId(categoryRepository.findByName(rs.getString("category")).map(Category::getId).orElse(null))

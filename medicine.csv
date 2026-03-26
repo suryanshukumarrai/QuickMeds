@@ -1,51 +1,119 @@
-id,name,generic_name,category,price_inr,stock,requires_prescription,manufacturer,description
-1,Dolo 650,Paracetamol,Pain Relief,34,78,false,Sun Pharma,Used to reduce fever and mild body pain
-2,Crocin Advance,Paracetamol,Pain Relief,28,64,false,Cipla,Provides quick relief from fever and headache
-3,Combiflam,Ibuprofen + Paracetamol,Pain Relief,52,43,false,Dr. Reddys,Relieves pain inflammation and fever
-4,Saridon,Propyphenazone + Paracetamol + Caffeine,Pain Relief,48,57,false,Lupin,Effective for tension headache relief
-5,Voveran SR,Diclofenac Sodium,Pain Relief,96,35,false,Zydus,Used for joint pain and swelling relief
-6,Zerodol SP,Aceclofenac + Paracetamol + Serratiopeptidase,Pain Relief,142,29,false,Sun Pharma,Helps reduce musculoskeletal pain and inflammation
-7,Meftal Spas,Mefenamic Acid + Dicyclomine,Pain Relief,118,41,false,Cipla,Used for abdominal cramps and period pain
-8,Ultracet,Tramadol + Paracetamol,Pain Relief,162,22,true,Dr. Reddys,Used for moderate to severe pain management
-9,Calpol 500,Paracetamol,Pain Relief,24,88,false,Lupin,Used to relieve fever and common aches
-10,Brufen 400,Ibuprofen,Pain Relief,38,53,false,Zydus,Provides relief from pain and inflammation
-11,Azithral 500,Azithromycin,Antibiotics,119,32,true,Sun Pharma,Treats bacterial infections of throat and lungs
-12,Augmentin 625,Amoxicillin + Clavulanic Acid,Antibiotics,198,27,true,Cipla,Broad spectrum antibiotic for bacterial infections
-13,Cifran 500,Ciprofloxacin,Antibiotics,86,46,true,Dr. Reddys,Used for urinary and gastrointestinal infections
-14,Taxim-O 200,Cefixime,Antibiotics,142,34,true,Lupin,Used to treat respiratory and urinary infections
-15,Azee 500,Azithromycin,Antibiotics,112,39,true,Zydus,Treats bacterial infections in ear nose and throat
-16,Moxikind-CV 625,Amoxicillin + Clavulanic Acid,Antibiotics,176,25,true,Sun Pharma,Used for bacterial chest and sinus infections
-17,O2 Tablet,Ofloxacin + Ornidazole,Antibiotics,168,31,true,Cipla,Used for mixed bacterial and protozoal infections
-18,Doxy-1 L-DR,Doxycycline,Antibiotics,74,55,true,Dr. Reddys,Used for skin chest and sexually transmitted infections
-19,Levoflox 500,Levofloxacin,Antibiotics,129,37,true,Lupin,Used for severe bacterial respiratory infections
-20,Monocef-O 200,Cefpodoxime,Antibiotics,154,28,true,Zydus,Used for bacterial infections of lungs and throat
-21,Cetcip,Cetirizine,Cold & Flu,32,69,false,Sun Pharma,Relieves sneezing runny nose and allergy symptoms
-22,Okacet,Cetirizine,Cold & Flu,26,73,false,Cipla,Provides relief from cold related allergic symptoms
-23,Sinarest,Chlorpheniramine + Paracetamol + Phenylephrine,Cold & Flu,58,48,false,Dr. Reddys,Relieves nasal congestion headache and fever
-24,Vicks Action 500,Paracetamol + Caffeine + Phenylephrine,Cold & Flu,44,62,false,Lupin,Used for common cold body ache and blocked nose
-25,Cheston Cold,Paracetamol + Phenylephrine + Chlorpheniramine,Cold & Flu,49,51,false,Zydus,Helps manage cold symptoms with mild fever
-26,Benadryl Cough Formula,Dextromethorphan + Diphenhydramine,Cold & Flu,92,36,false,Sun Pharma,Provides relief from dry cough and irritation
-27,Ascoril LS,Ambroxol + Levosalbutamol + Guaifenesin,Cold & Flu,109,33,false,Cipla,Used for productive cough and chest congestion
-28,Alex Cough Lozenges,Hexylresorcinol,Cold & Flu,35,82,false,Dr. Reddys,Soothes sore throat and mild cough
-29,Honitus Cough Syrup,Herbal Blend,Cold & Flu,115,40,false,Lupin,Herbal syrup for cough and throat comfort
-30,Wikoryl,Paracetamol + Phenylephrine + Chlorpheniramine,Cold & Flu,47,58,false,Zydus,Relieves fever sneezing and nasal blockage
-31,Becosules Capsule,B Complex Vitamins,Vitamins & Supplements,52,76,false,Sun Pharma,Helps prevent and treat vitamin B deficiency
-32,Shelcal 500,Calcium + Vitamin D3,Vitamins & Supplements,138,45,false,Cipla,Supports bone strength and calcium levels
-33,Revital H,Multivitamin + Ginseng,Vitamins & Supplements,320,30,false,Dr. Reddys,Daily supplement for energy and immunity support
-34,Neurobion Forte,Methylcobalamin + B Complex,Vitamins & Supplements,42,66,false,Lupin,Supports nerve health and vitamin B levels
-35,Limcee 500,Vitamin C,Vitamins & Supplements,28,90,false,Zydus,Boosts immunity and supports recovery from fatigue
-36,Zincovit,Multivitamin + Zinc,Vitamins & Supplements,118,54,false,Sun Pharma,Supports immunity appetite and daily nutrition
-37,Supradyn Daily,Multivitamin + Minerals,Vitamins & Supplements,162,47,false,Cipla,Daily multivitamin for overall wellness
-38,Evion 400,Vitamin E,Vitamins & Supplements,36,71,false,Dr. Reddys,Used for vitamin E supplementation and skin health
-39,A to Z NS,Multivitamin + Minerals,Vitamins & Supplements,94,59,false,Lupin,Supports daily nutritional balance and vitality
-40,Livogen,Iron + Folic Acid,Vitamins & Supplements,126,38,false,Zydus,Used to prevent and treat iron deficiency anemia
-41,Digene Gel,Aluminium Hydroxide + Magnesium Hydroxide + Simethicone,Digestive Health,145,44,false,Sun Pharma,Provides relief from acidity gas and heartburn
-42,ENO Fruit Salt,Sodium Bicarbonate + Citric Acid,Digestive Health,12,96,false,Cipla,Fast relief from acidity and indigestion
-43,Gelusil MPS,Aluminium Hydroxide + Magnesium + Simethicone,Digestive Health,118,49,false,Dr. Reddys,Relieves acidity bloating and abdominal discomfort
-44,Pudin Hara Pearls,Peppermint Oil,Digestive Health,26,84,false,Lupin,Helps relieve gas and minor stomach discomfort
-45,Pan D,Pantoprazole + Domperidone,Digestive Health,172,27,true,Zydus,Used for reflux acidity and nausea control
-46,Pantocid 40,Pantoprazole,Digestive Health,108,42,true,Sun Pharma,Reduces stomach acid and heartburn symptoms
-47,Emoz 40,Esomeprazole,Digestive Health,132,36,true,Cipla,Used in acid reflux and gastric ulcer treatment
-48,Cyclopam,Dicyclomine + Simethicone,Digestive Health,54,63,false,Dr. Reddys,Relieves abdominal cramps and stomach spasms
-49,Cremaffin Liquid,Milk of Magnesia + Liquid Paraffin,Digestive Health,176,24,false,Lupin,Used for constipation relief and smooth bowel movement
-50,Electral ORS,Oral Rehydration Salts,Digestive Health,22,87,false,Zydus,Prevents dehydration due to diarrhea and vomiting
+id,name,generic_name,category,dosage,price_inr,stock,requires_prescription,manufacturer,description
+1,Dolo 650,Paracetamol,Pain Relief,650 mg,54,78,false,Sun Pharma,Used to reduce fever and mild body pain
+2,Crocin Advance,Paracetamol,Pain Relief,500 mg,48,64,false,Cipla,Provides quick relief from fever and headache
+3,Combiflam,Ibuprofen + Paracetamol,Pain Relief,400mg+325mg,72,43,false,Dr. Reddys,Relieves pain inflammation and fever
+4,Saridon,Propyphenazone + Paracetamol + Caffeine,Pain Relief,350mg+150mg+50mg,68,57,false,Lupin,Effective for tension headache relief
+5,Voveran SR,Diclofenac Sodium,Pain Relief,100 mg,116,35,false,Zydus,Used for joint pain and swelling relief
+6,Zerodol SP,Aceclofenac + Paracetamol + Serratiopeptidase,Pain Relief,100mg+325mg+15mg,162,29,false,Sun Pharma,Reduces musculoskeletal pain
+7,Meftal Spas,Mefenamic Acid + Dicyclomine,Pain Relief,250mg+10mg,138,41,false,Cipla,Used for abdominal cramps
+8,Ultracet,Tramadol + Paracetamol,Pain Relief,37.5mg+325mg,182,22,true,Dr. Reddys,Used for severe pain
+9,Calpol 500,Paracetamol,Pain Relief,500 mg,44,88,false,Lupin,Relieves fever and pain
+10,Brufen 400,Ibuprofen,Pain Relief,400 mg,58,53,false,Zydus,Used for inflammation and pain
+
+11,Nise,Nimesulide,Pain Relief,100 mg,82,48,false,Sun Pharma,Relieves pain and inflammation
+12,Flexon,Ibuprofen + Paracetamol,Pain Relief,400mg+325mg,66,55,false,Cipla,Used for fever and pain
+13,Myospaz,Chlorzoxazone + Paracetamol,Pain Relief,250mg+325mg,158,33,true,Dr. Reddys,Muscle relaxant
+14,Nucoxia 90,Etoricoxib,Pain Relief,90 mg,176,28,true,Zydus,Used for arthritis
+15,Tramazac,Tramadol,Pain Relief,50 mg,198,22,true,Lupin,Moderate to severe pain
+
+16,Azithral 500,Azithromycin,Antibiotics,500 mg,139,32,true,Sun Pharma,Treats bacterial infections
+17,Augmentin 625,Amoxicillin + Clavulanic Acid,Antibiotics,500mg+125mg,218,27,true,Cipla,Broad spectrum antibiotic
+18,Cifran 500,Ciprofloxacin,Antibiotics,500 mg,106,46,true,Dr. Reddys,UTI and GI infections
+19,Taxim-O 200,Cefixime,Antibiotics,200 mg,162,34,true,Lupin,Respiratory infections
+20,Azee 500,Azithromycin,Antibiotics,500 mg,132,39,true,Zydus,ENT infections
+
+21,Moxikind-CV 625,Amoxicillin + Clavulanic Acid,Antibiotics,500mg+125mg,196,25,true,Sun Pharma,Chest infections
+22,O2 Tablet,Ofloxacin + Ornidazole,Antibiotics,200mg+500mg,188,31,true,Cipla,Mixed infections
+23,Doxy-1 L-DR,Doxycycline,Antibiotics,100 mg,94,55,true,Dr. Reddys,Skin infections
+24,Levoflox 500,Levofloxacin,Antibiotics,500 mg,149,37,true,Lupin,Severe infections
+25,Monocef-O 200,Cefpodoxime,Antibiotics,200 mg,174,28,true,Zydus,Lung infections
+
+26,Clavam 625,Amoxicillin + Clavulanic Acid,Antibiotics,625 mg,202,29,true,Sun Pharma,Respiratory infections
+27,Floxip,Ciprofloxacin,Antibiotics,500 mg,114,41,true,Cipla,GI infections
+28,Redixime 200,Cefixime,Antibiotics,200 mg,154,37,true,Dr. Reddys,Lung infections
+29,Azicip 500,Azithromycin,Antibiotics,500 mg,128,36,true,Lupin,Throat infections
+30,Lariago,Chloroquine,Antibiotics,250 mg,84,52,true,Zydus,Malaria treatment
+
+31,Cetcip,Cetirizine,Cold & Flu,10 mg,52,69,false,Sun Pharma,Relieves allergies
+32,Okacet,Cetirizine,Cold & Flu,10 mg,46,73,false,Cipla,Allergy relief
+33,Sinarest,Cold Combo,Cold & Flu,NA,78,48,false,Dr. Reddys,Cold and fever relief
+34,Vicks Action 500,Cold Combo,Cold & Flu,NA,64,62,false,Lupin,Cold symptoms
+35,Cheston Cold,Cold Combo,Cold & Flu,NA,69,51,false,Zydus,Cold management
+
+36,Benadryl,Dextromethorphan,Cold & Flu,100 ml syrup,112,36,false,Sun Pharma,Cough relief
+37,Ascoril LS,Ambroxol Combo,Cold & Flu,100 ml syrup,129,33,false,Cipla,Chest congestion
+38,Alex Lozenges,Hexylresorcinol,Cold & Flu,2.4 mg,55,82,false,Dr. Reddys,Sore throat relief
+39,Honitus,Herbal,Cold & Flu,100 ml syrup,135,40,false,Lupin,Herbal cough syrup
+40,Wikoryl,Cold Combo,Cold & Flu,NA,67,58,false,Zydus,Cold symptoms
+
+41,Allegra 120,Fexofenadine,Cold & Flu,120 mg,98,63,false,Sun Pharma,Allergy relief
+42,Montair LC,Montelukast + Levocetirizine,Cold & Flu,10mg+5mg,162,45,false,Cipla,Allergy treatment
+43,Grilinctus,Dextromethorphan,Cold & Flu,100 ml syrup,146,39,false,Dr. Reddys,Cough suppressant
+44,TusQ,Codeine Syrup,Cold & Flu,100 ml syrup,158,28,true,Lupin,Severe cough
+45,Kofol,Herbal,Cold & Flu,100 ml syrup,118,44,false,Zydus,Ayurvedic cough relief
+
+46,Becosules,B Complex,Vitamins & Supplements,NA,72,76,false,Sun Pharma,Vitamin deficiency
+47,Shelcal 500,Calcium + D3,Vitamins & Supplements,500 mg,158,45,false,Cipla,Bone health
+48,Revital H,Multivitamin,Vitamins & Supplements,NA,340,30,false,Dr. Reddys,Energy supplement
+49,Neurobion Forte,B Complex,Vitamins & Supplements,NA,62,66,false,Lupin,Nerve health
+50,Limcee 500,Vitamin C,Vitamins & Supplements,500 mg,48,90,false,Zydus,Immunity booster
+
+51,Zincovit,Multivitamin,Vitamins & Supplements,NA,138,54,false,Sun Pharma,Immunity support
+52,Supradyn,Multivitamin,Vitamins & Supplements,NA,182,47,false,Cipla,Daily supplement
+53,Evion 400,Vitamin E,Vitamins & Supplements,400 mg,56,71,false,Dr. Reddys,Skin health
+54,A to Z NS,Multivitamin,Vitamins & Supplements,NA,114,59,false,Lupin,Nutrition support
+55,Livogen,Iron + Folic Acid,Vitamins & Supplements,NA,146,38,false,Zydus,Anemia treatment
+
+56,Digene Gel,Antacid,Digestive Health,200 ml,165,44,false,Sun Pharma,Acidity relief
+57,ENO,Sodium Bicarbonate,Digestive Health,NA,32,96,false,Cipla,Quick acidity relief
+58,Gelusil,Antacid,Digestive Health,NA,138,49,false,Dr. Reddys,Bloating relief
+59,Pudin Hara,Peppermint Oil,Digestive Health,NA,46,84,false,Lupin,Gas relief
+60,Pan D,Pantoprazole + Domperidone,Digestive Health,40mg+10mg,192,27,true,Zydus,Acidity control
+
+61,Pantocid 40,Pantoprazole,Digestive Health,40 mg,128,42,true,Sun Pharma,Acid reflux
+62,Emoz 40,Esomeprazole,Digestive Health,40 mg,152,36,true,Cipla,Ulcer treatment
+63,Cyclopam,Dicyclomine,Digestive Health,20 mg,74,63,false,Dr. Reddys,Stomach cramps
+64,Cremaffin,Laxative,Digestive Health,200 ml,196,24,false,Lupin,Constipation relief
+65,Electral ORS,ORS,Digestive Health,NA,42,87,false,Zydus,Dehydration
+
+66,Rantac 150,Ranitidine,Digestive Health,150 mg,54,66,false,Sun Pharma,Acid reducer
+67,Looz Syrup,Lactulose,Digestive Health,100 ml,162,36,false,Cipla,Constipation
+68,Spasmoproxyvon,Antispasmodic,Digestive Health,NA,84,57,false,Dr. Reddys,Abdominal pain
+69,Norflox TZ,Norfloxacin + Tinidazole,Digestive Health,NA,148,43,true,Lupin,Diarrhea treatment
+70,Digestive Enzyme,Enzymes,Digestive Health,100 ml,138,49,false,Zydus,Digestion
+
+71,Ostocalcium,Calcium,Vitamins & Supplements,500 mg,182,41,false,Sun Pharma,Bone strength
+72,HK Multivitamin,Multivitamin,Vitamins & Supplements,NA,419,35,false,Cipla,Daily supplement
+73,Fish Oil,Omega 3,Vitamins & Supplements,1000 mg,519,26,false,Dr. Reddys,Heart health
+74,Fast&Up Charge,Electrolyte,Vitamins & Supplements,NA,345,32,false,Lupin,Energy boost
+75,Carbamide Forte,Multivitamin,Vitamins & Supplements,NA,309,38,false,Zydus,Nutrition support
+
+76,ORS Apple,ORS,Digestive Health,NA,52,60,false,Sun Pharma,Rehydration
+77,Zerodol,Pain Relief,Pain Relief,100 mg,142,50,false,Cipla,Pain relief
+78,Aceclo,Anti-inflammatory,Pain Relief,100 mg,152,44,false,Dr. Reddys,Inflammation
+79,Movexx,Pain Relief,Pain Relief,NA,162,36,true,Lupin,Joint pain
+80,Ketorol,Ketorolac,Pain Relief,10 mg,182,29,true,Zydus,Severe pain
+
+81,Clarithromycin,Antibiotic,Antibiotics,500 mg,198,40,true,Sun Pharma,Respiratory infections
+82,Amoxyclav,Antibiotic,Antibiotics,625 mg,210,35,true,Cipla,Infections
+83,Cefixime 200,Antibiotic,Antibiotics,200 mg,150,38,true,Dr. Reddys,Infections
+84,Metrogyl,Metronidazole,Antibiotics,400 mg,90,65,true,Lupin,GI infection
+85,Oflox,Ofloxacin,Antibiotics,200 mg,110,70,true,Zydus,UTI
+
+86,Levocet,Levocetirizine,Cold & Flu,5 mg,55,72,false,Sun Pharma,Allergy
+87,Coldact,Cold Combo,Cold & Flu,NA,95,68,false,Cipla,Cold relief
+88,T-Minic,Cold Combo,Cold & Flu,NA,88,63,false,Dr. Reddys,Cold
+89,Kuffdryl,Cough Syrup,Cold & Flu,100 ml,140,45,false,Lupin,Cough
+90,Corex,Cough Syrup,Cold & Flu,100 ml,160,38,true,Zydus,Severe cough
+
+91,Multivit Gold,Multivitamin,Vitamins & Supplements,NA,220,50,false,Sun Pharma,Daily vitamin
+92,Vitamin D3,Cholecalciferol,Vitamins & Supplements,60000 IU,120,60,false,Cipla,Bone health
+93,Iron Tablet,Iron,Vitamins & Supplements,NA,80,55,false,Dr. Reddys,Anemia
+94,Protein Powder,Supplement,Vitamins & Supplements,NA,450,20,false,Lupin,Muscle health
+95,Electrolyte Drink,ORS,Vitamins & Supplements,NA,95,75,false,Zydus,Hydration
+
+96,Gasex,Ayurvedic,Digestive Health,NA,90,80,false,Sun Pharma,Gas relief
+97,Triphala,Herbal,Digestive Health,NA,110,70,false,Cipla,Digestion
+98,Lactifiber,Fiber,Digestive Health,NA,130,60,false,Dr. Reddys,Constipation
+99,Domstal,Domperidone,Digestive Health,10 mg,85,50,true,Lupin,Nausea
+100,Rablet,Rabeprazole,Digestive Health,20 mg,140,45,true,Zydus,Acidity

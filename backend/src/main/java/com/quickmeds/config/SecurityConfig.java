@@ -1,11 +1,8 @@
 package com.quickmeds.config;
 
 import java.util.List;
-
-import com.quickmeds.security.CustomUserDetailsService;
-import com.quickmeds.security.JwtAuthFilter;
-import com.quickmeds.security.JwtAuthenticationEntryPoint;
-import lombok.RequiredArgsConstructor;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +23,12 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.quickmeds.security.CustomUserDetailsService;
+import com.quickmeds.security.JwtAuthFilter;
+import com.quickmeds.security.JwtAuthenticationEntryPoint;
+
+import lombok.RequiredArgsConstructor;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -37,7 +40,7 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint authEntryPoint;
 
     @Value("${app.frontend-url}")
-    private String frontendUrl;
+    private String frontendUrls;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -52,6 +55,7 @@ public class SecurityConfig {
                                 "/api/categories/**",
                                 "/api/packages/**",
                                 "/api/offers/active",
+                                "/api/health",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
@@ -84,13 +88,19 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of(
-                frontendUrl,
+        List<String> allowedOrigins = Stream.concat(
+            Stream.of(frontendUrls.split(","))
+                .map(String::trim)
+                .filter(origin -> !origin.isBlank()),
+            Stream.of(
                 "http://127.0.0.1:5173",
                 "http://localhost:5173",
                 "http://localhost:3000",
                 "http://127.0.0.1:3000"
-        ));
+            )
+        ).distinct().collect(Collectors.toList());
+
+        config.setAllowedOrigins(allowedOrigins);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);

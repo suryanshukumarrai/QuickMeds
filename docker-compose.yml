@@ -1,0 +1,53 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: quickmeds-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: quickmeds
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "${MYSQL_HOST_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: quickmeds-backend
+    restart: unless-stopped
+    environment:
+      DB_URL: jdbc:mysql://mysql:3306/quickmeds?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      JWT_SECRET: change-this-secret-key-to-at-least-32-characters-long
+      MAIL_PASSWORD: replace-with-mail-app-password
+      FRONTEND_URL: http://localhost
+      JPA_SHOW_SQL: "false"
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: /api
+    container_name: quickmeds-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:

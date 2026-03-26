@@ -3,16 +3,39 @@ import { Link } from 'react-router-dom';
 import { formatInr, getMedicineImage } from '../utils/medicineUi';
 
 function MedicineCard({ medicine, onAddToCart, quantity = 0, onIncrease, onDecrease }) {
-  const dosageOptions = useMemo(() => {
+  const normalize = (value) => (value || '').trim();
+
+  const buildFallbackOptions = () => {
     const text = `${medicine?.name || ''} ${medicine?.categoryName || ''}`.toLowerCase();
+    if (text.includes('paracetamol') || text.includes('dolo') || text.includes('crocin') || text.includes('calpol')) {
+      return ['500 mg', '650 mg'];
+    }
+    if (text.includes('antibiotic') || text.includes('azith') || text.includes('augmentin') || text.includes('taxim') || text.includes('cifran')) {
+      return ['250 mg', '500 mg'];
+    }
     if (text.includes('syrup') || text.includes('suspension') || text.includes('drops')) {
       return ['60 ml', '100 ml', '200 ml'];
     }
     if (text.includes('injection') || text.includes('vial')) {
       return ['2 ml', '5 ml', '10 ml'];
     }
-    return ['250 mg', '500 mg', '650 mg'];
-  }, [medicine?.name, medicine?.categoryName]);
+    return ['As prescribed'];
+  };
+
+  const dosageOptions = useMemo(() => {
+    const rawDosage = normalize(medicine?.dosage);
+    if (!rawDosage || rawDosage.toLowerCase() === 'na') {
+      return buildFallbackOptions();
+    }
+
+    const splitRegex = /\s*[,/|]\s*/;
+    const parsed = rawDosage
+      .split(splitRegex)
+      .map((part) => part.trim())
+      .filter(Boolean);
+
+    return parsed.length > 1 ? parsed : [rawDosage];
+  }, [medicine?.dosage, medicine?.name, medicine?.categoryName]);
 
   const [selectedDosage, setSelectedDosage] = useState(dosageOptions[0]);
 
@@ -31,16 +54,22 @@ function MedicineCard({ medicine, onAddToCart, quantity = 0, onIncrease, onDecre
         <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">{medicine.categoryName}</p>
         <div className="mt-1 flex items-start justify-between gap-2">
           <h3 className="text-lg font-bold leading-tight">{medicine.name}</h3>
-          <select
-            value={selectedDosage}
-            onChange={(e) => setSelectedDosage(e.target.value)}
-            className="shrink-0 border border-slate-300 rounded-md px-2 py-1 text-xs font-semibold text-slate-700 bg-white"
-            aria-label={`${medicine.name} dosage`}
-          >
-            {dosageOptions.map((option) => (
-              <option key={option} value={option}>{option}</option>
-            ))}
-          </select>
+          {dosageOptions.length === 1 ? (
+            <span className="shrink-0 border border-slate-300 rounded-md px-2 py-1 text-xs font-semibold text-slate-700 bg-slate-50">
+              {dosageOptions[0]}
+            </span>
+          ) : (
+            <select
+              value={selectedDosage}
+              onChange={(e) => setSelectedDosage(e.target.value)}
+              className="shrink-0 border border-slate-300 rounded-md px-2 py-1 text-xs font-semibold text-slate-700 bg-white"
+              aria-label={`${medicine.name} dosage`}
+            >
+              {dosageOptions.map((option) => (
+                <option key={option} value={option}>{option}</option>
+              ))}
+            </select>
+          )}
         </div>
         <p className="text-sm text-slate-600 mt-2 line-clamp-2">{medicine.description}</p>
         <div className="mt-4 flex justify-between items-center">

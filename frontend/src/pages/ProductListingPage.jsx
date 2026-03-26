@@ -38,9 +38,15 @@ function ProductListingPage() {
       const params = {};
       if (search) params.search = search;
       if (categoryId) params.categoryId = categoryId;
-      const { data } = await api.get('/medicines', { params });
+      params._t = Date.now();
+      const { data } = await api.get('/medicines', {
+        params,
+        headers: {
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache',
+        },
+      });
       const rows = Array.isArray(data) ? data : [];
-      console.log('GET /api/medicines rows:', rows.length, rows.slice(0, 3));
       setMedicines(rows);
     } catch (error) {
       console.error('Failed to fetch medicines:', error);

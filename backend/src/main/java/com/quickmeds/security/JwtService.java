@@ -1,9 +1,12 @@
 package com.quickmeds.security;
 
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.quickmeds.entity.User;
@@ -11,11 +14,21 @@ import com.quickmeds.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY = "mysecretkey123456mysecretkey123456mysecretkey123456";
+    private final Key signingKey;
+    private final long expirationMs;
+
+    public JwtService(
+            @Value("${app.jwt.secret}") String secretKey,
+            @Value("${app.jwt.expiration-ms:3600000}") long expirationMs
+    ) {
+        this.signingKey = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+        this.expirationMs = expirationMs;
+    }
 
     public String generateToken(User user, String role) {
         Map<String, Object> claims = new HashMap<>();
@@ -25,8 +38,8 @@ public class JwtService {
                 .setClaims(claims)
                 .setSubject(user.getEmail())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+            .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
+            .signWith(signingKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -47,8 +60,9 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
+        return Jwts.parserBuilder()
+            .setSigningKey(signingKey)
+            .build()
                 .parseClaimsJws(token)
                 .getBody();
     }

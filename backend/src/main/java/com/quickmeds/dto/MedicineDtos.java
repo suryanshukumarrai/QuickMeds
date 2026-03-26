@@ -12,6 +12,7 @@ public class MedicineDtos {
         @NotNull @DecimalMin("0.0") private BigDecimal price;
         @NotNull @Min(0) private Integer stock;
         @NotNull private Boolean requiresPrescription;
+        private String dosage;
         private String imageUrl;
         @NotNull private Long categoryId;
     }
@@ -23,8 +24,10 @@ public class MedicineDtos {
         private String name;
         private String description;
         private BigDecimal price;
+        private Integer priceInr;
         private Integer stock;
         private Boolean requiresPrescription;
+        private String dosage;
         private String imageUrl;
         private Long categoryId;
         private String categoryName;

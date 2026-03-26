@@ -39,7 +39,13 @@ function HomePage() {
 
   useEffect(() => {
     Promise.all([
-      api.get('/medicines'),
+      api.get('/medicines', {
+        params: { _t: Date.now() },
+        headers: {
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache',
+        },
+      }),
       api.get('/categories'),
       api.get('/offers/active'),
       api.get('/packages'),

@@ -31,6 +31,8 @@ public class Medicine {
     @Column(nullable = false)
     private Boolean requiresPrescription;
 
+    private String dosage;
+
     private String imageUrl;
 
     @ManyToOne

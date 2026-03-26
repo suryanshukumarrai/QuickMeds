@@ -4,6 +4,7 @@ import com.quickmeds.dto.OrderDtos;
 import com.quickmeds.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OrderDtos.OrderResponse> place(Authentication authentication, @Valid @RequestBody OrderDtos.PlaceOrderRequest request) {
         return ResponseEntity.ok(orderService.place(authentication.getName(), request));
     }

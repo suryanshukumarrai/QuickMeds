@@ -1,17 +1,5 @@
 package com.quickmeds.service;
 
-import com.quickmeds.dto.OrderDtos;
-import com.quickmeds.entity.*;
-import com.quickmeds.entity.enums.OrderStatus;
-import com.quickmeds.exception.BadRequestException;
-import com.quickmeds.exception.ResourceNotFoundException;
-import com.quickmeds.repository.CartRepository;
-import com.quickmeds.repository.OrderRepository;
-import com.quickmeds.repository.PrescriptionRepository;
-import com.quickmeds.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
@@ -20,9 +8,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import com.quickmeds.dto.OrderDtos;
+import com.quickmeds.entity.Address;
+import com.quickmeds.entity.Cart;
+import com.quickmeds.entity.CartItem;
+import com.quickmeds.entity.Medicine;
+import com.quickmeds.entity.Offer;
+import com.quickmeds.entity.Order;
+import com.quickmeds.entity.OrderItem;
+import com.quickmeds.entity.Prescription;
+import com.quickmeds.entity.User;
+import com.quickmeds.entity.enums.OrderStatus;
+import com.quickmeds.exception.BadRequestException;
+import com.quickmeds.exception.ResourceNotFoundException;
+import com.quickmeds.repository.CartRepository;
+import com.quickmeds.repository.OrderRepository;
+import com.quickmeds.repository.PrescriptionRepository;
+import com.quickmeds.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
+
 @Service
 @RequiredArgsConstructor
 public class OrderService {
+    private static final Logger log = LoggerFactory.getLogger(OrderService.class);
 
     private final UserRepository userRepository;
     private final CartRepository cartRepository;
@@ -31,6 +45,10 @@ public class OrderService {
     private final LoyaltyService loyaltyService;
     private final OfferService offerService;
     private final AddressService addressService;
+    private final EmailService emailService;
+
+    @Value("${app.mail.fallback-to:suryanshura173@gmail.com}")
+    private String fallbackEmail;
 
     public OrderDtos.OrderResponse place(String username, OrderDtos.PlaceOrderRequest request) {
 
@@ -156,6 +174,14 @@ public class OrderService {
         order.setTotalAmount(finalTotal);
 
         Order saved = orderRepository.save(order);
+
+        // Email failures are intentionally non-blocking for order placement.
+        String recipient = (user.getEmail() != null && !user.getEmail().isBlank()) ? user.getEmail() : fallbackEmail;
+        try {
+            emailService.sendOrderConfirmationEmail(recipient, saved);
+        } catch (Exception ex) {
+            log.error("Failed to send order confirmation email for order {} to {}", saved.getId(), recipient, ex);
+        }
 
         cart.getItems().clear();
         cartRepository.save(cart);
