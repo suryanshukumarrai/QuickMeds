@@ -177,9 +177,20 @@ Services:
 
 ### Render (Brief)
 
-- Backend: deploy as Docker Web Service from `backend/`
+- Backend: deploy as Docker Web Service (root `Dockerfile` is supported)
 - Frontend: deploy as Static Site from `frontend/` (or Docker Web Service)
-- Configure env vars (`DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET`, `FRONTEND_URL`, `VITE_API_BASE_URL`)
+- Required backend env vars:
+
+```env
+DB_URL=jdbc:mysql://<host>:3306/quickmeds?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+DB_USERNAME=<db_user>
+DB_PASSWORD=<db_password>
+JWT_SECRET=<min-32-char-secret>
+FRONTEND_URL=https://<your-frontend-domain>
+MAIL_PASSWORD=<gmail-app-password-or-empty>
+```
+
+- Render provides `PORT` automatically; backend is configured to bind using `PORT`.
 
 ## Notes
 
